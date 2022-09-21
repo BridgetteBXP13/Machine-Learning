@@ -36,6 +36,17 @@ test <- df[-i,]
 ```
 
 ```{r}
+data(train)
+
+head(train)
+
+tail(train)
+
+mean(train$PM2.5)
+mean(train$PM10)
+
+median(train$PM2.5)
+median(train$PM10)
 
 ```
 
