@@ -78,7 +78,7 @@ Normal Q-Q:
 This graph shows the standardized residuals and theoretical quantiles, if they come from the same distribution then the points should form a roughly straight line. Our data set has a very straight line until around (4, 10) where we once again see our outlier points 16687 and the couple below. As you can see it once again steers away from the gray line in a strong curve shape. Although the line is still fairly straight overall but we may have some skewed data in our dataset (possibly from having to replace many missing values with the mean). It can also mean since it is curved at the edge that our dataset contains more extreme values.
 
 Scale Location:
-Our scale-location graph is very uneven and is basically a black blob. The residuals are supposed to be spread evenly across the range of predictors, which can show the assumption of equal variance. As you can tell ours is definately not good, this shows that our assumption of equal variance is very incorrect. 
+Our scale-location graph is very uneven and is basically a black blob. The residuals are supposed to be spread evenly across the range of predictors, which can show the assumption of equal variance. As you can tell ours is definitely not good, this shows that our assumption of equal variance is very incorrect. 
 
 
 Leverage vs Residuals:
