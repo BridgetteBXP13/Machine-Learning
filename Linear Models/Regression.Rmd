@@ -70,4 +70,16 @@ plot(lm1)
 ```
 
 The residual plots above are summarized below:
-Leverage vs Residuals plot for our model. The leverage is the extent to which the coefficients in the regression model would change if a particular observation was removed from the dataset. Thus observations with high leverage have strong influence on the coefficients of the regression model. The standardized residuals refer to the standardized difference between a predicted value and actual value of an observation. You can tell in the plots above that we have no influential points as all the points of the data are within the cook's distance (dotted lines).
+
+Residuals vs Fitted:
+In this plot it shows whether the linearity holds, indicated by the mean residual value for every fitted value region being close to 0 (the red line being close to the dashed line). As you can see the redline is very close to the dashed line close to 20, but drifts downwards as we get close to 40 and 0. We can also see that we may have outliers at point 16687 and the other two below (I cannot read them because of the way R printed them ontop of eachother). Overall it shows that our model is a good model. 
+
+Normal Q-Q:
+This graph shows the standardized residuals and theoretical quantiles, if they come from the same distribution then the points should form a roughly straight line. Our data set has a very straight line until around (4, 10) where we once again see our outlier points 16687 and the couple below. As you can see it once again steers away from the gray line in a strong curve shape. Although the line is still fairly straight overall but we may have some skewed data in our dataset (possibly from having to replace many missing values with the mean). It can also mean since it is curved at the edge that our dataset contains more extreme values.
+
+Scale Location:
+Our scale-location graph is very uneven and is basically a black blob. The residuals are supposed to be spread evenly across the range of predictors, which can show the assumption of equal variance. As you can tell ours is definately not good, this shows that our assumption of equal variance is very incorrect. 
+
+
+Leverage vs Residuals:
+In this plot the leverage is the extent to which the coefficients in the regression model would change if a particular observation was removed from the dataset. Thus observations with high leverage have strong influence on the coefficients of the regression model. The standardized residuals refer to the standardized difference between a predicted value and actual value of an observation. You can tell in the plots above that we have no influential points as all the points of the data are within the cook's distance (dotted lines).
