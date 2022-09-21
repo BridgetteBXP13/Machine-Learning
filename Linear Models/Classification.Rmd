@@ -1,0 +1,13 @@
+---
+title: "Classification"
+student: "Isabelle Kirby", "Bridgette Bryant" 
+NetID: "IRK180000", "BMB180001"
+Assignment: "Linear Models"
+Date: "09/16/2021"
+---
+
+```{r}
+plot(cars)
+```
+
+
