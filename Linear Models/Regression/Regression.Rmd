@@ -53,7 +53,9 @@ median(train$PM10)
 These are our plots
 ```{r}
 hist(train$PM2.5)
-plot(train$Year, train$NO2)
+plot(train$NO2, train$Year)
+plot(train$NO2, train$PM2.5)
+plot(train$NO2, train$PM10)
 ```
 
 
@@ -63,7 +65,7 @@ Plotting the linear regression
 lm1 <- lm(NO2~PM2.5, data=train)
 summary(lm1)
 ```
-The summary above is used to help determine if our linear model is good or bad, if it accurately predicts our target or not. We can start with the min, max, and median. As you can see it has a very wide range, showing that we may have some outliers or very divided data. The residual standard error is 9.974 on 25650 degrees of freedom, this states that roughly the model's predictions are about 10 units off. The multiple r-squared error is 0.02057, this should be as close to 1 as possible. In most cases anything under .4 is a poor model. However our p-value is fairly low and very close to 0, according to this we have a good model.
+The summary above is used to help determine if our linear model is good or bad, if it accurately predicts our target or not. We can start with the min, max, and median. As you can see it has a very wide range, showing that we may have some outliers or very divided data. The residual standard error is 9.974 on 25650 degrees of freedom, this states that roughly the model's predictions are about 10 units off. The multiple r-squared error is 0.02057, this should be as close to 1 as possible. In most cases anything under .4 is a poor model at explaining variance in the data. However our p-value is fairly low and very close to 0, according to this we have a good model that is significant.
 
 
 
@@ -74,7 +76,7 @@ plot(lm1)
 The residual plots above are summarized below:
 
 Residuals vs Fitted:
-In this plot it shows whether the linearity holds, indicated by the mean residual value for every fitted value region being close to 0 (the red line being close to the dashed line). As you can see the redline is very close to the dashed line close to 20, but drifts downwards as we get close to 40 and 0. We can also see that we may have outliers at point 16687 and the other two below (I cannot read them because of the way R printed them ontop of eachother). Overall it shows that our model is a good model. 
+In this plot it shows whether the linearity holds, indicated by the mean residual value for every fitted value region being close to 0 (the red line being close to the dashed line). As you can see the redline is very close to the dashed line close to 20, but drifts downwards as we get close to 40 and 0. We can also see that we may have outliers at point 16687 and the other two below (we cannot read them because of the way R printed them ontop of eachother). Overall it shows that our model is a good model. 
 
 Normal Q-Q:
 This graph shows the standardized residuals and theoretical quantiles, if they come from the same distribution then the points should form a roughly straight line. Our data set has a very straight line until around (4, 10) where we once again see our outlier points 16687 and the couple below. As you can see it once again steers away from the gray line in a strong curve shape. Although the line is still fairly straight overall but we may have some skewed data in our dataset (possibly from having to replace many missing values with the mean). It can also mean since it is curved at the edge that our dataset contains more extreme values.
@@ -91,24 +93,65 @@ lm2 <- lm(NO2~PM2.5+PM10, data=train)
 summary(lm2)
 ```
 
-The summary above can be used to compare this model with the previous one above. The residual standard error is 9.82 instead of 9.974 on about the same degrees of freedom, this states that roughly the model's predictions are still about 10 units off but slightly less than the previous model. The multiple r-squared error is 0.05059 instead of 0.02057, this should be as close to 1 as possible so it is very much an improvement compared to the model above. However, it is still well under .4 and therefore is still a poor model. The p-value is for both models is the same.
+The summary above can be used to compare this model with the previous one above. The residual standard error is 9.82 instead of 9.974 on about the same degrees of freedom, this states that roughly the model's predictions are still about 10 units off but slightly less than the previous model. The multiple r-squared error is 0.05059 instead of 0.02057, this should be as close to 1 as possible so it is very much an improvement compared to the model above. However, it is still well under .4 and therefore is still a poor model at explaining variance in the data. The p-value is for both models is the same that is significant.
 
 ```{r}
 plot(lm2)
 ```
 
-As you can see above these plots are even more extreme in every graph in the wrong ways. Residuals vs fitted is less of a straight line and curves dramatically at the end. Normal Q-Q is very much curved at the edges telling us our dataset is skewed. The scale location is even more of a condensed black blob than above. Finally in Residuals vs Leverage we have even more extreme outliers at both ends, but still no influential values (barely). Overall with these results this model is worse than the original above.
+As you can see above these plots are even more extreme in every graph in the wrong ways. Residuals vs fitted is less of a straight line and curves dramatically at the end. Normal Q-Q is very much curved at the edges telling us our dataset is skewed. The scale location is about the same of a condensed black blob as above. Finally in Residuals vs Leverage we have even more extreme outliers at both ends, but still no influential values (barely). Overall with these results this model is worse than the original above.
 
 
 ```{r}
 lm3 <- lm(NO2~Year+PM2.5+PM10, data=train)
 summary(lm3)
 ```
-The summary above can be used to compare this model with the previous models above. The residual standard error is 9.84 instead of 9.974 and 9.82 on about the same degrees of freedom, this states that roughly the model's predictions are still about 10 units off being slightly more than the previous models. The multiple r-squared error is 0.05974, which is much better than 0.02057 from the first model, but slightly worse than 0.05059 from the second model, this should be as close to 1 as possible so it is not an improvement compared to the models above. Still being well under .4 and therefore is still a poor model. The p-value is for all models is the same.
+The summary above can be used to compare this model with the previous models above. The residual standard error is 9.737 instead of 9.974 and 9.82 on about the same degrees of freedom, this states that roughly the model's predictions are still about 10 units off being slightly less than the previous models. The multiple r-squared error is 0.06038, which is much better than 0.02057 from the first model, and slightly better than 0.05059 from the second model, this should be as close to 1 as possible so it is not an improvement compared to the models above. Still being well under .4 and therefore is still a poor model at explaining variance in the data. The p-value is for all models is the same that is significant.
 
 ```{r}
 plot(lm3)
 ```
 
-As you can see above these plots are even more extreme in every graph in the wrong ways. Residuals vs fitted is less of a straight line and curves dramatically at the end. Normal Q-Q is very much curved at the ending edge telling us our dataset is skewed. The scale location is even more of a condensed black blob than above. Finally in Residuals vs Leverage we have even more extreme outliers at both ends and has one influential value at 16687. Overall with these results this model is worse than the models above.
+As you can see above these plots vary more than the 2nd model. Residuals vs fitted is less of a straight line and curves more at the end than the 1st model, but is more straight than the 2nd model. Normal Q-Q is very much curved at the ending edge telling us our dataset is skewed, but not as bad as the 2nd model. The scale location is about the same of a condensed black blob as above. Finally in Residuals vs Leverage we have even more extreme outliers at both ends and has one influential value at 16687. Overall with these results this model is worse than the models above.
 
+Overall, all of the models do a very poor job at explaining the variation of the data. Which makes sense as there are many outside factors not in the dataset that are causing/changing the air pollution/quality. But the models do manage to have a low p-value and thus does have a significant meaning and isn't useless. The models aren't very good in general but could be used for something specific in predicting the NO2 of areas given PM2.5 or PM10. It is a close call but we think the 3rd model is the best out of the three as it has a higher multiple r-squared error and a lower residual standard error.
+
+Here is the testing of the three models:
+
+```{r}
+pred1 <- predict(lm1, newdata=test)
+pred2 <- predict(lm2, newdata=test)
+pred3 <- predict(lm3, newdata=test)
+```
+
+Here are the test results of the three models:
+Linear model 1:
+```{r}
+correlation1 <- cor(pred1, test$NO2)
+print(paste("correlation: ", correlation1))
+mse <- mean((pred1 - test$NO2)^2)
+print(paste("mse: ", mse))
+rmse <- sqrt(mse)
+print(paste("rmse: ", rmse))
+```
+Linear model 2:
+```{r}
+correlation2 <- cor(pred2, test$NO2)
+print(paste("correlation: ", correlation2))
+mse <- mean((pred2 - test$NO2)^2)
+print(paste("mse: ", mse))
+rmse <- sqrt(mse)
+print(paste("rmse: ", rmse))
+```
+
+
+Linear model 3:
+```{r}
+correlation3 <- cor(pred3, test$NO2)
+print(paste("correlation: ", correlation1))
+mse <- mean((pred3 - test$NO2)^2)
+print(paste("mse: ", mse))
+rmse <- sqrt(mse)
+print(paste("rmse: ", rmse))
+```
+As expected the correlation for all models is quite low, the highest is model 2, but is still very unacceptable. The RMSE tells us that our model is off around 10 units as expected from above. We believe these results happened because there was a lot of missing data in the dataset that we had to fill in with medians, as well as the unpredictable differences between these data values. They are primarily caused by outside forces, not necessarily by each other therefore there is likely little accurate correlation between them and using them to predict another is ignoring outside factors. There was also a very high amount of variance in the data that very much affected the ability for the linear model to fit the dataset well. 
