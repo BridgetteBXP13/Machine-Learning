@@ -63,6 +63,8 @@ Plotting the linear regression
 lm1 <- lm(NO2~PM2.5, data=train)
 summary(lm1)
 ```
+The summary above is used to help determine if our linear model is good or bad, if it accurately predicts our target or not. We can start with the min, max, and median. As you can see it has a very wide range, showing that we may have some outliers or very divided data. The residual standard error is 9.974 on 25650 degrees of freedom, this states that roughly the model's predictions are about 10 units off. The multiple r-squared error is 0.02057, this should be as close to 1 as possible. In most cases anything under .4 is a poor model. However our p-value is fairly low and very close to 0, according to this we have a good model.
+
 
 
 ```{r}
@@ -82,23 +84,31 @@ Our scale-location graph is very uneven and is basically a black blob. The resid
 
 
 Leverage vs Residuals:
-In this plot the leverage is the extent to which the coefficients in the regression model would change if a particular observation was removed from the dataset. Thus observations with high leverage have strong influence on the coefficients of the regression model. The standardized residuals refer to the standardized difference between a predicted value and actual value of an observation. You can tell in the plots above that we have no influential points as all the points of the data are within the cook's distance (dotted lines).
+In this plot the leverage is the extent to which the coefficients in the regression model would change if a particular observation was removed from the dataset. Thus observations with high leverage have strong influence on the coefficients of the regression model. The standardized residuals refer to the standardized difference between a predicted value and actual value of an observation. You can tell in the plots above that we have no influential points as all the points of the data are within the cook's distance (dotted lines). But we may have outliers at points 16563, 14785, and 1285.
 
 ```{r}
 lm2 <- lm(NO2~PM2.5+PM10, data=train)
 summary(lm2)
 ```
+
+The summary above can be used to compare this model with the previous one above. The residual standard error is 9.82 instead of 9.974 on about the same degrees of freedom, this states that roughly the model's predictions are still about 10 units off but slightly less than the previous model. The multiple r-squared error is 0.05059 instead of 0.02057, this should be as close to 1 as possible so it is very much an improvement compared to the model above. However, it is still well under .4 and therefore is still a poor model. The p-value is for both models is the same.
+
 ```{r}
 plot(lm2)
 ```
 
+As you can see above these plots are even more extreme in every graph in the wrong ways. Residuals vs fitted is less of a straight line and curves dramatically at the end. Normal Q-Q is very much curved at the edges telling us our dataset is skewed. The scale location is even more of a condensed black blob than above. Finally in Residuals vs Leverage we have even more extreme outliers at both ends, but still no influential values (barely). Overall with these results this model is worse than the original above.
+
 
 ```{r}
-lm3 <- lm(PM2.5~Year+NO2, data=train)
+lm3 <- lm(NO2~Year+PM2.5+PM10, data=train)
 summary(lm3)
 ```
+The summary above can be used to compare this model with the previous models above. The residual standard error is 9.84 instead of 9.974 and 9.82 on about the same degrees of freedom, this states that roughly the model's predictions are still about 10 units off being slightly more than the previous models. The multiple r-squared error is 0.05974, which is much better than 0.02057 from the first model, but slightly worse than 0.05059 from the second model, this should be as close to 1 as possible so it is not an improvement compared to the models above. Still being well under .4 and therefore is still a poor model. The p-value is for all models is the same.
+
 ```{r}
 plot(lm3)
 ```
 
+As you can see above these plots are even more extreme in every graph in the wrong ways. Residuals vs fitted is less of a straight line and curves dramatically at the end. Normal Q-Q is very much curved at the ending edge telling us our dataset is skewed. The scale location is even more of a condensed black blob than above. Finally in Residuals vs Leverage we have even more extreme outliers at both ends and has one influential value at 16687. Overall with these results this model is worse than the models above.
 
