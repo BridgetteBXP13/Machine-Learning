@@ -60,9 +60,8 @@ plot(train$Year, train$NO2)
 
 Plotting the linear regression
 ```{r}
-lm1 <- lm(NO2~NO2.temporal.coverage, data=train)
+lm1 <- lm(NO2~PM2.5, data=train)
 summary(lm1)
-plot(lm1)
 ```
 
 The residual plots above are summarized below:
