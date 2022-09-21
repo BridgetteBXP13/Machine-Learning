@@ -62,6 +62,10 @@ Plotting the linear regression
 ```{r}
 lm1 <- lm(NO2~PM2.5, data=train)
 summary(lm1)
+```
+
+
+```{r}
 plot(lm1)
 ```
 
