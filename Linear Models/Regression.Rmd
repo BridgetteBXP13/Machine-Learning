@@ -30,7 +30,7 @@ str(df)
 
 Now we are creating the training and testing sets (80% train, 20% test).
 ```{r}
-i <-sample(1:nrow(df), .nrow(df)*0.80, replace=FALSE)
+i <-sample(1:nrow(df), nrow(df)*0.80, replace=FALSE)
 train <- df[i,]
 test <- df[-i,]
 ```
