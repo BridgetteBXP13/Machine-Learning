@@ -50,6 +50,11 @@ median(train$PM2.5)
 median(train$PM10)
 
 ```
+These are our plots
+```{r}
+hist(train$PM2.5)
+plot(train$Year, train$NO2)
+```
 
 
 
