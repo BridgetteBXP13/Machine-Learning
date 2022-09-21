@@ -5,15 +5,18 @@ NetID: "IRK180000", "BMB180001"
 Assignment: "Linear Models"
 Date: "09/16/2021"
 ---
-This is the data I have chosen to use for this assignment. It basically compiles
-information on the overall air quality of different cities over time.
+Linear Regression:
+
+In simple terms, linear regression tries to predict a quantitative target by fitting a linear model to the input of the predictors to best fit the target in the training data. A simple linear regression model is often in the form of y = wX + b where y values as the targets, X values as the predictors, the linear model creates the weight matrix w and the fitting parameter b. Linear models don't always have to be straight lines, they can be complex polynomials with multiple predictor variables. Once a linear regression model is created/trained, you can judge it's performance by the standard error, t-value, and most of all the p-value. A p-value very close to 0 is the most ideal, R will show you with '***' to ' ' next to the value with '***' showing an excellent p-value. Residual standard error is also another way to measure your linear model, it calculated from residual sum of squared errors, and measures the lack of fit the model has for the data. However, it is in the units of the data and can be difficult to interpret at times, therefore it is better to use r-squared which lies between 0 and 1. The closer to 1 the better the model. You can also evaluate the model with correlation, which shows the correlation, which shows the degree in terms of 1 and -1, a close to 1 shows it is strongly positively correlation, a -1 shows it is strongly negatively correlation, and lastly a 0 shows no correlation. Linear regression has a few weaknesses including iteration effects, where there is too much synergy between predictors, causing them to have too much impact as a whole on the model. Along with confounding variables, which correlate with both the target and predictors which can give too high of a correlation in the training data. Also, hidden variables in the model, this can lead to false conclusions and assumptions such as a correlation being a causation in the data. Linear regression is also very likely to underfit data, causing it to fail at capturing some of the data and have a low accuracy. However, linear regression is very simple to implement and has a very high performance on linearly separable data sets. Also, overfitting data is unlikely to happen and can be very easy to fix in linear models using regularization.
+
+We have chosen the "Air_Pollution.csv" for this assignment. It contains data of the overall air quality of different cities overtime. 
 
 It has 32191 observations initially.
 ```{r}
 df <- read.csv("Air_Pollution.csv")
 str(df)
 ```
-we then fill incomplete rows cells with the medians from their rows
+We then fill incomplete rows cells with the medians from their rows
 ```{r}
 fill_NA <-function(mean_med, v){
   if(mean_med == 1){
@@ -35,7 +38,7 @@ df$NO2.temporal.coverage <- fill_NA(1, df$NO2.temporal.coverage)
 str(df)
 ```
 
-Now I'm creating the training and testing sets.
+Now we are creating the training and testing sets.
 ```{r}
 i <-sample(1:nrow(df), .8*nrow(df), replace=FALSE)
 train <- df[i,]
