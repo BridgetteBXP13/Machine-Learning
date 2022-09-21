@@ -13,9 +13,25 @@ It has 32191 observations initially.
 df <- read.csv("Air_Pollution.csv")
 str(df)
 ```
-I then take out the instances that have incomplete information.
+we then fill incomplete rows cells with the medians from their rows
 ```{r}
-df <- df[(complete.cases(df)),]
+fill_NA <-function(mean_med, v){
+  if(mean_med == 1){
+    m <- mean(v, na.rm=TRUE)
+  } else{
+    m <- median(v, na.rm=TRUE)
+  }
+  
+  v[is.na(v)] <- m
+  v
+}
+
+df$PM2.5 <- fill_NA(1, df$PM2.5)
+df$PM10 <- fill_NA(1, df$PM10)
+df$NO2 <- fill_NA(1, df$NO2)
+df$PM25.temporal.coverage <- fill_NA(1, df$PM25.temporal.coverage)
+df$PM10.temporal.coverage <- fill_NA(1, df$PM10.temporal.coverage)
+df$NO2.temporal.coverage <- fill_NA(1, df$NO2.temporal.coverage)
 str(df)
 ```
 
