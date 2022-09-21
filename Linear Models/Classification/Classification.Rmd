@@ -7,7 +7,22 @@ Date: "09/16/2021"
 ---
 
 ```{r}
-plot(cars)
+df <- read.csv("mushrooms.csv")
+str(df)
+```
+```{r}
+i <- sample(1:nrow(df), nrow(df)*.80, replace=FALSE)
+train <- df[i,]
+test <- df[-i,]
+```
+
+```{r}
+head(train)
+tail(train)
+
+median(train$class)
+
+
 ```
 
 
