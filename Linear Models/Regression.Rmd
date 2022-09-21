@@ -28,9 +28,9 @@ df$NO2.temporal.coverage[is.na(df$NO2.temporal.coverage)] <- mean(df$NO2.tempora
 str(df)
 ```
 
-Now we are creating the training and testing sets.
+Now we are creating the training and testing sets (80% train, 20% test).
 ```{r}
-i <-sample(1:nrow(df), .8*nrow(df), replace=FALSE)
+i <-sample(1:nrow(df), .nrow(df)*0.80, replace=FALSE)
 train <- df[i,]
 test <- df[-i,]
 ```
