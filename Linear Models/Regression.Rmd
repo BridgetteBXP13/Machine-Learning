@@ -1,0 +1,40 @@
+---
+title: "Regression"
+student: "Isabelle Kirby", "Bridgette Bryant" 
+NetID: "IRK180000", "BMB180001"
+Assignment: "Linear Models"
+Date: "09/16/2021"
+---
+This is the data I have chosen to use for this assignment. It basically compiles
+information on the overall air quality of different cities over time.
+
+It has 32191 observations initially.
+```{r}
+df <- read.csv("Air_Pollution.csv")
+str(df)
+```
+I then take out the instances that have incomplete information.
+```{r}
+df <- df[(complete.cases(df)),]
+str(df)
+```
+
+Now I'm creating the training and testing sets.
+```{r}
+i <-sample(1:nrow(df), .8*nrow(df), replace=FALSE)
+train <- df[i,]
+test <- df[-i,]
+```
+
+Plotting the linear regression
+```{r}
+lm1 <- lm(NO2~NO2.temporal.coverage, data=train)
+summary(lm1)
+plot(lm1)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
