@@ -22,6 +22,7 @@ tail(train)
 
 median(train$class)
 
+mode(train$cap.color)
 
 ```
 
