@@ -36,11 +36,12 @@ test <- df[-i,]
 ```
 
 ```{r}
-data(train)
-
 head(train)
 
 tail(train)
+
+range(train$PM2.5, na.rm=FALSE)
+range(train$PM10, na.rm=FALSE)
 
 mean(train$PM2.5)
 mean(train$PM10)
