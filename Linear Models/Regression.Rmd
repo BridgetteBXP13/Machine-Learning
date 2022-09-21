@@ -83,3 +83,22 @@ Our scale-location graph is very uneven and is basically a black blob. The resid
 
 Leverage vs Residuals:
 In this plot the leverage is the extent to which the coefficients in the regression model would change if a particular observation was removed from the dataset. Thus observations with high leverage have strong influence on the coefficients of the regression model. The standardized residuals refer to the standardized difference between a predicted value and actual value of an observation. You can tell in the plots above that we have no influential points as all the points of the data are within the cook's distance (dotted lines).
+
+```{r}
+lm2 <- lm(NO2~PM2.5+PM10, data=train)
+summary(lm2)
+```
+```{r}
+plot(lm2)
+```
+
+
+```{r}
+lm3 <- lm(PM2.5~Year+NO2, data=train)
+summary(lm3)
+```
+```{r}
+plot(lm3)
+```
+
+
