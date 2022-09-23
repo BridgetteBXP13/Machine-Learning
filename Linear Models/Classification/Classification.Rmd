@@ -31,7 +31,12 @@ tail(train)
 
 median(train$Elevation)
 
-mode(train$Cover_Type)
+getmode <- function(d) {
+  uniqd <- unique(d)
+  uniqd[which.max(tabulate(match(d, uniqd)))]
+}
+getmode(train$Cover_Type)
+getmode(train$Soil_Type)
 
 str(train)
 ```
@@ -39,6 +44,10 @@ Plots
 ```{r}
 hist(train$Elevation)
 hist(train$Soil_Type)
+
+counts <- table(train$Cover_Type)
+barplot(counts)
+
 slices <- c(sum(train$Wilderness_Area1==1, na.rm=TRUE), sum(train$Wilderness_Area2==1, na.rm=TRUE), sum(train$Wilderness_Area3==1, na.rm=TRUE), sum(train$Wilderness_Area4==1, na.rm=TRUE))
 
 labls <- c("Wilds 1","Wilds 2","Wilds 3","Wilds 4")
@@ -92,23 +101,23 @@ tree_type7 <- df
 tree_type7$Cover_Type <- as.factor(ifelse (tree_type7$Cover_Type=="7",1,0))
 
 fun <- function(dataf, i){
-  train <- dataf[i,]
-  test <- dataf[-i,]
-  glm1 <- glm(Cover_Type~., data=train, family="binomial")
-  probs <- predict(glm1, newdata=test)
+  funtrain <- dataf[i,]
+  funtest <- dataf[-i,]
+  glm1 <- glm(Cover_Type~., data=funtrain, family="binomial")
+  probs <- predict(glm1, newdata=funtest)
   pred <- ifelse(probs>0.5, 1, 0)
-  acc <- mean(pred==test$Cover_Type)
+  acc <- mean(pred==funtest$Cover_Type)
   print(paste("accuracy = ", acc))
-  table(pred, test$Cover_Type)
+  table(pred, funtest$Cover_Type)
 }
 
-fun(tree_type1, i)
-fun(tree_type2, i)
-fun(tree_type3, i)
-fun(tree_type4, i)
-fun(tree_type5, i)
-fun(tree_type6, i)
-fun(tree_type7, i)
+#fun(tree_type1, i)
+#fun(tree_type2, i)
+#fun(tree_type3, i)
+#fun(tree_type4, i)
+#un(tree_type5, i)
+#fun(tree_type6, i)
+#fun(tree_type7, i)
 
 
 #glm1 <- glm(Slope~Elevation, data=train, family=poisson())
@@ -129,6 +138,6 @@ pbayes <- predict(nb1, newdata=test, type="class")
 table(pbayes, test$Cover_Type)
 ```
 ```{r}
-mode(pbayes==test$Cover_Type)
+getmode(pbayes==test$Cover_Type)
 ```
 
