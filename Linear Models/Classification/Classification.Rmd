@@ -32,6 +32,19 @@ slices <- c(sum(train$Wilderness_Area1==1, na.rm=TRUE), sum(train$Wilderness_Are
 
 labls <- c("Wilds 1","Wilds 2","Wilds 3","Wilds 4")
 pie(slices,labels = labls, main="Types of Wild Area", col=c("green", "blue", "yellow", "red"))
+
+```
+Logistic Regression
+```{r}
+glm1 <- glm(Slope~Elevation, data=train, family=poisson())
+summary(glm1)
 ```
 
+
+Naive Bayes
+```{r}
+library(e1071)
+nb1 <- naiveBayes(Hillshade9am~., data=train)
+nb1
+```
 
