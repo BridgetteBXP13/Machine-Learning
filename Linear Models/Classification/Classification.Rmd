@@ -44,6 +44,24 @@ Logistic Regression
 tree_type1 <- df
 tree_type1$Cover_Type <- as.factor(ifelse (tree_type1$Cover_Type=="1",1,0))
 
+tree_type2 <- df
+tree_type2$Cover_Type <- as.factor(ifelse (tree_type2$Cover_Type=="2",1,0))
+
+tree_type3 <- df
+tree_type3$Cover_Type <- as.factor(ifelse (tree_type3$Cover_Type=="3",1,0))
+
+tree_type4 <- df
+tree_type4$Cover_Type <- as.factor(ifelse (tree_type4$Cover_Type=="4",1,0))
+
+tree_type5 <- df
+tree_type5$Cover_Type <- as.factor(ifelse (tree_type5$Cover_Type=="5",1,0))
+
+tree_type6 <- df
+tree_type6$Cover_Type <- as.factor(ifelse (tree_type6$Cover_Type=="6",1,0))
+
+tree_type7 <- df
+tree_type7$Cover_Type <- as.factor(ifelse (tree_type7$Cover_Type=="7",1,0))
+
 fun <- function(dataf, i){
   train <- dataf[i,]
   test <- dataf[-i,]
@@ -56,6 +74,12 @@ fun <- function(dataf, i){
 }
 
 fun(tree_type1, i)
+fun(tree_type2, i)
+fun(tree_type3, i)
+fun(tree_type4, i)
+fun(tree_type5, i)
+fun(tree_type6, i)
+fun(tree_type7, i)
 
 
 #glm1 <- glm(Slope~Elevation, data=train, family=poisson())
