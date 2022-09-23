@@ -25,12 +25,13 @@ test <- df[-i,]
 ```
 Data Exploration
 ```{r}
+
 head(train)
 tail(train)
 
-median(train$class)
+median(train$Elevation)
 
-mode(train$Color_Type)
+mode(train$Cover_Type)
 
 str(train)
 ```
