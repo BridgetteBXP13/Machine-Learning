@@ -7,13 +7,13 @@ Date: "09/16/2021"
 ---
 
 ```{r}
-df <- read.csv("mushrooms.csv")
-str(df)
+df <- read.csv("covtype.csv")
 ```
 ```{r}
 i <- sample(1:nrow(df), nrow(df)*.80, replace=FALSE)
 train <- df[i,]
 test <- df[-i,]
+
 ```
 
 ```{r}
@@ -23,6 +23,10 @@ tail(train)
 median(train$class)
 
 mode(train$cap.color)
+
+str(train)
+```
+```{r}
 
 ```
 
