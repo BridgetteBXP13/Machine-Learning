@@ -94,7 +94,7 @@ fun <- function(dataf, i){
 #fun(tree_type2, i)
 #fun(tree_type3, i)
 #fun(tree_type4, i)
-#un(tree_type5, i)
+#fun(tree_type5, i)
 #fun(tree_type6, i)
 #fun(tree_type7, i)
 
