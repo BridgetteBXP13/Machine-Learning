@@ -44,7 +44,9 @@ Logistic Regression
 tree_type1 <- df
 tree_type1$Cover_Type <- as.factor(ifelse (tree_type1$Cover_Type=="1",1,0))
 
-fun <- function(dataf){
+fun <- function(dataf, i){
+  train <- dataf[i,]
+  test <- dataf[-i,]
   glm1 <- glm(Cover_Type~., data=train, family="binomial")
   probs <- predict(glm1, newdata=test)
   pred <- ifelse(probs>0.5, 1, 0)
@@ -53,7 +55,7 @@ fun <- function(dataf){
   table(pred, test$Cover_Type)
 }
 
-fun(tree_type1)
+fun(tree_type1, i)
 
 
 #glm1 <- glm(Slope~Elevation, data=train, family=poisson())
