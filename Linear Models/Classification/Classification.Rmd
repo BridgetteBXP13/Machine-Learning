@@ -5,17 +5,19 @@ NetID: "IRK180000", "BMB180001"
 Assignment: "Linear Models"
 Date: "09/16/2021"
 ---
-
+Loading in file
 ```{r}
 df <- read.csv("covtype.csv")
 ```
+
+Now we are creating the training and testing sets (80% train, 20% test).
 ```{r}
 i <- sample(1:nrow(df), nrow(df)*.80, replace=FALSE)
 train <- df[i,]
 test <- df[-i,]
 
 ```
-
+Data Exploration
 ```{r}
 head(train)
 tail(train)
@@ -26,6 +28,7 @@ mode(train$cap.color)
 
 str(train)
 ```
+Plots
 ```{r}
 hist(train$Elevation)
 slices <- c(sum(train$Wilderness_Area1==1, na.rm=TRUE), sum(train$Wilderness_Area2==1, na.rm=TRUE), sum(train$Wilderness_Area3==1, na.rm=TRUE), sum(train$Wilderness_Area4==1, na.rm=TRUE))
