@@ -47,7 +47,28 @@ pie(slices,labels = labls, main="Types of Wild Area", col=c("green", "blue", "ye
 ```
 Explanation of Logistic Regression below:
 
+Our logistical regression has relatively high accuracy rates for all of the different types of trees. Since there are seven different types of trees present in the data, we split the data solely about the tree type into a dataframe specifically made for them. From there we made models for each tree type.
 
+Type 1:
+For this model we had about a 75% accuracy level. This model did a very good job at identifying whether or not a tree was apart of tree type 1. That being said it identified a lot more trees as tree type 1 that were not in fact in that tree type than false negatives. This leads me to believe that this might be a more common tree type with less niche demands for growth, allowing for the model to falsely think that some trees are of that type.
+
+Type 2:
+For this model we had an accuracy level of about 73%, meaning that our model was mostly accurate. It also had more difficulty with false positives than it did with false negatives. This again may be due to that tree having less specific needs for its growth and having a high variance in the data.
+
+Type 3:
+This model had an accuracy level of about 96%, a truly impressive accuracy level. It also had a more difficult time with identifying more false positives than false negatives, but that could be due to the common trees in type 1 and type 2. This tree most likely has some specific needs (ie: a lower variance in the data). This does mean that the bias is higher in this model, however it is still incredibly accurate.
+
+Type 4:
+This model had an accuracy of 99.6%. It identified a lot of trees as correctly being apart of that tree type. It seems that it had more of an issue with false positives than it did false negatives, but it still accurately described the data set given.
+
+Type 5:
+For this one it only shows us the truth line. We aren't sure what caused this bug or why it is only doing it for tree type 5, but regardless it is saying that it is still accurately predicted true positive at a 98% accuracy.
+
+Type 6:
+For this model we have nearly a 97% accuracy level. It is also identified more true positives than anything else, meaning that the data used was filled mostly with type 6 trees. It also had a larger amount of false positives than false negatives due to the more resilient and less specific trees in the data set.
+
+Type 7:
+This model had around a 98% accuracy level. As with the other models its reporting a lot of true positives, as well as false positives. This one however has more true negatives than 
 ```{r}
 tree_type1 <- df
 tree_type1$Cover_Type <- as.factor(ifelse (tree_type1$Cover_Type=="1",1,0))
