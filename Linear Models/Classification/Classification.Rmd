@@ -25,7 +25,7 @@ tail(train)
 
 median(train$class)
 
-mode(train$cap.color)
+mode(train$Color_Type)
 
 str(train)
 ```
@@ -87,10 +87,19 @@ fun(tree_type7, i)
 ```
 
 
-Naive Bayes
+Naive Bayes, Building the model
 ```{r}
 library(e1071)
-nb1 <- naiveBayes(Slope~., data=train)
+nb1 <- naiveBayes(Cover_Type~., data=train)
 nb1
+```
+
+Evaluate on the test data
+```{r}
+pbayes <- predict(nb1, newdata=test, type="class")
+table(pbayes, test$Cover_Type)
+```
+```{r}
+mode(pbayes==test$Cover_Type)
 ```
 
