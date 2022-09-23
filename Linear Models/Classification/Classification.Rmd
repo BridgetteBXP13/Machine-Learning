@@ -6,13 +6,14 @@ output:
   html_document: default
 ---
 
-Logistic Regression:
+# Logistic Regression:
 
 Despite its name, in logistic regression we are classifying data. This means that the target variable is qualitative and we're trying to discern what class an observation is in. As such, linear models for logistic regression create decision boundaries to split observations into regions populated by mostly one classification. This is computationally inexpensive and works well when data can be separated cleanly (linearly). It also displays the probabilistic output in an manageable manner. This being said, a model is only as good as the data that is presented to it. When given a data set that is too small or unbalanced, the model itself isn't able to be trained well enough to be reliable for use in professional settings.It also tends to under fit data as it's not complex enough to capture non-linear decision boundaries. 
 ................
 
-Loading in file
+Loading in file and Libraries
 ```{r}
+library(caret)
 df <- read.csv("covtype.csv")
 df$Cover_Type <- factor(df$Cover_Type)
 ```
@@ -24,7 +25,7 @@ train <- df[i,]
 test <- df[-i,]
 
 ```
-Data Exploration
+## Data Exploration:
 ```{r}
 
 head(train)
@@ -55,32 +56,7 @@ labls <- c("Wilds 1","Wilds 2","Wilds 3","Wilds 4")
 pie(slices,labels = labls, main="Types of Wild Area", col=c("green", "blue", "yellow", "red"))
 
 ```
-Explanation of Logistic Regression below:
-
-Our logistical regression has relatively high accuracy rates for all of the different types of trees. Since there are seven different types of trees present in the data, we split the data solely about the tree type into a dataframe specifically made for them. From there we made models for each tree type.
-
-Type 1:
-For this model we had about a 75% accuracy level. This model did a very good job at identifying whether or not a tree was apart of tree type 1. That being said it identified a lot more trees as tree type 1 that were not in fact in that tree type than false negatives. This leads me to believe that this might be a more common tree type with less niche demands for growth, allowing for the model to falsely think that some trees are of that type.
-
-Type 2:
-For this model we had an accuracy level of about 73%, meaning that our model was mostly accurate. It also had more difficulty with false positives than it did with false negatives. This again may be due to that tree having less specific needs for its growth and having a high variance in the data.
-
-Type 3:
-This model had an accuracy level of about 96%, a truly impressive accuracy level. It also had a more difficult time with identifying more false positives than false negatives, but that could be due to the common trees in type 1 and type 2. This tree most likely has some specific needs (ie: a lower variance in the data). This does mean that the bias is higher in this model, however it is still incredibly accurate.
-
-Type 4:
-This model had an accuracy of 99.6%. It identified a lot of trees as correctly being apart of that tree type. It seems that it had more of an issue with false positives than it did false negatives, but it still accurately described the data set given.
-
-Type 5:
-For this model we have a 98% accuracy level. Oddly enough, for this tree type its saying that there were no true negatives. That would mean that there were only 1855 trees that aren't of type five (this is from the false positive cell). This is a high number of trees of type 5.
-
-Type 6:
-For this model we have nearly a 97% accuracy level. It is also identified more true positives than anything else, meaning that the data used was filled mostly with type 6 trees. It also had a larger amount of false positives than false negatives due to the more resilient and less specific trees in the data set.
-
-Type 7:
-This model had around a 98% accuracy level. As with the other models its reporting a lot of true positives, as well as false positives. This one however has more true negatives than the other models did. This tree type probably had more specific needs than other trees, making it easy to find what trees are not that type.
-
-In conclusion, despite the accuracy levels of each regression being high there seems to be an unusually high number of true positives for each tree type. We are unsure the cause of this as our function is modeled very closely to the one used in class.
+## Creating the One vs All Models:
 ```{r}
 tree_type1 <- df
 tree_type1$Cover_Type <- as.factor(ifelse (tree_type1$Cover_Type=="1",1,0))
@@ -123,14 +99,41 @@ fun(tree_type6, i)
 fun(tree_type7, i)
 
 ```
+## Logistic Regression Model Summary and Evaluation:
 
-Naive Bayes, Building the model
+Our logistical regression has relatively high accuracy rates for all of the different types of trees. Since there are seven different types of trees present in the data, we split the data solely about the tree type into a dataframe specifically made for them. From there we made models for each tree type.
+
+Type 1:
+For this model we had about a 75% accuracy level. This model did a very good job at identifying whether or not a tree was apart of tree type 1. That being said it identified a lot more trees as tree type 1 that were not in fact in that tree type than false negatives. This leads me to believe that this might be a more common tree type with less niche demands for growth, allowing for the model to falsely think that some trees are of that type.
+
+Type 2:
+For this model we had an accuracy level of about 73%, meaning that our model was mostly accurate. It also had more difficulty with false positives than it did with false negatives. This again may be due to that tree having less specific needs for its growth and having a high variance in the data.
+
+Type 3:
+This model had an accuracy level of about 96%, a truly impressive accuracy level. It also had a more difficult time with identifying more false positives than false negatives, but that could be due to the common trees in type 1 and type 2. This tree most likely has some specific needs (ie: a lower variance in the data). This does mean that the bias is higher in this model, however it is still incredibly accurate.
+
+Type 4:
+This model had an accuracy of 99.6%. It identified a lot of trees as correctly being apart of that tree type. It seems that it had more of an issue with false positives than it did false negatives, but it still accurately described the data set given.
+
+Type 5:
+For this model we have a 98% accuracy level. Oddly enough, for this tree type its saying that there were no true negatives. That would mean that there were only 1855 trees that aren't of type five (this is from the false positive cell). This is a high number of trees of type 5.
+
+Type 6:
+For this model we have nearly a 97% accuracy level. It is also identified more true positives than anything else, meaning that the data used was filled mostly with type 6 trees. It also had a larger amount of false positives than false negatives due to the more resilient and less specific trees in the data set.
+
+Type 7:
+This model had around a 98% accuracy level. As with the other models its reporting a lot of true positives, as well as false positives. This one however has more true negatives than the other models did. This tree type probably had more specific needs than other trees, making it easy to find what trees are not that type.
+
+In conclusion, despite the accuracy levels of each regression being high there seems to be an unusually high number of true positives for each tree type. We are unsure the cause of this as our function is modeled very closely to the one used in class. On average the overall accuracy is: 90.9%
+
+
+## Creating the Naive Bayes Model:
 ```{r}
 library(e1071)
 nb1 <- naiveBayes(Cover_Type~., data=train)
 nb1
 ```
-The output above shows that it learned the following correlations and probabilities:
+### The output above shows that it learned the following correlations and probabilities:
 
 The prior for the seven Cover Types is shown as roughly:
 36% for cover type 1, 49% for cover type 2, 6% for cover type 3, .5% for cover type 4, 1.6% for cover type 5, and 3% for cover type 6. This shows that cover type 1 and 2 are the most likely overall by a significant amount. 
@@ -168,9 +171,37 @@ The means for cover types 1, 4, 5, and 7 is 0, showing it is highly unlikely for
 
 The soil types have very similar patterns, however there are 40 columns and it would be very lengthy to review all of them in this summary.
 
-Evaluate on the test data
+## Evaluate on the test data
 ```{r}
 pbayes <- predict(nb1, newdata=test, type="class")
 table(pbayes, test$Cover_Type)
+mean(pbayes==test$Cover_Type)
+pbayes_raw <- predict(nb1, newdata=test, type="raw")
+head(pbayes_raw)
 ```
+As seen above, our accuracy for bayes model is about 7%, which is significantly less than our logical regression model. I think a reason why is because of large our data set is, the bayes algorithm tends to perform better on smaller datasets than large ones such as this one. I also think that the means and variance for this dataset isn't super helpful for predictions when compared to a linear algorithm. The bayes class independence assumption causes it to perform very poorly here, as all the classes in our dataset are very much connected/dependent on one another, such as soil type, wilderness area, and elevation. 
+
+## Classification Metrics:
+
+### Accuracy:
+As shown from above, the overall accuracy our Logistic Regression Models was 90.9%. Whereas our accuracy from our Native Bayes Model was 7%. 
+
+### Sensitivity and Specificity:
+Sensitivity: True Positive Rate, (TP / (TP+FN))
+
+Specificity: True Negative Rate, (TN / (TN+FP))
+
+### Kappa:
+
+
+### ROC Curves and AUC:
+
+### MCC:
+
+
+
+## Naive Bayes vs Logistic Regression
+
+## Classification Metrics: Benefits/Drawbacks
+
 
