@@ -71,13 +71,15 @@ Type 4:
 This model had an accuracy of 99.6%. It identified a lot of trees as correctly being apart of that tree type. It seems that it had more of an issue with false positives than it did false negatives, but it still accurately described the data set given.
 
 Type 5:
-For this one it only shows us the truth line. We aren't sure what caused this bug or why it is only doing it for tree type 5, but regardless it is saying that it is still accurately predicted true positive at a 98% accuracy.
+For this model we have a 98% accuracy level. Oddly enough, for this tree type its saying that there were no true negatives. That would mean that there were only 1855 trees that aren't of type five (this is from the false positive cell). This is a high number of trees of type 5.
 
 Type 6:
 For this model we have nearly a 97% accuracy level. It is also identified more true positives than anything else, meaning that the data used was filled mostly with type 6 trees. It also had a larger amount of false positives than false negatives due to the more resilient and less specific trees in the data set.
 
 Type 7:
-This model had around a 98% accuracy level. As with the other models its reporting a lot of true positives, as well as false positives. This one however has more true negatives than 
+This model had around a 98% accuracy level. As with the other models its reporting a lot of true positives, as well as false positives. This one however has more true negatives than the other models did. This tree type probably had more specific needs than other trees, making it easy to find what trees are not that type.
+
+In conclusion, despite the accuracy levels of each regression being high there seems to be an unusually high number of true positives for each tree type. We are unsure the cause of this as our function is modeled very closely to the one used in class.
 ```{r}
 tree_type1 <- df
 tree_type1$Cover_Type <- as.factor(ifelse (tree_type1$Cover_Type=="1",1,0))
@@ -111,13 +113,13 @@ fun <- function(dataf, i){
   table(pred, funtest$Cover_Type)
 }
 
-#fun(tree_type1, i)
-#fun(tree_type2, i)
-#fun(tree_type3, i)
-#fun(tree_type4, i)
-#un(tree_type5, i)
-#fun(tree_type6, i)
-#fun(tree_type7, i)
+fun(tree_type1, i)
+fun(tree_type2, i)
+fun(tree_type3, i)
+fun(tree_type4, i)
+fun(tree_type5, i)
+fun(tree_type6, i)
+fun(tree_type7, i)
 
 
 #glm1 <- glm(Slope~Elevation, data=train, family=poisson())
