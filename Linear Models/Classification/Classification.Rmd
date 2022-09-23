@@ -1,10 +1,11 @@
 ---
-title: "Classification"
-student: "Isabelle Kirby", "Bridgette Bryant" 
-NetID: "IRK180000", "BMB180001"
-Assignment: "Linear Models"
-Date: "09/16/2021"
+title: "Linear Models: Classification"
+author: "Isabelle Kirby, Bridgette Bryant"
+output:
+  pdf_document: default
+  html_document: default
 ---
+
 Logistic Regression:
 
 Despite its name, in logistic regression we are classifying data. This means that the target variable is qualitative and we're trying to discern what class an observation is in. As such, linear models for logistic regression create decision boundaries to split observations into regions populated by mostly one classification. This is computationally inexpensive and works well when data can be separated cleanly (linearly). It also displays the probabilistic output in an manageable manner. This being said, a model is only as good as the data that is presented to it. When given a data set that is too small or unbalanced, the model itself isn't able to be trained well enough to be reliable for use in professional settings.It also tends to under fit data as it's not complex enough to capture non-linear decision boundaries. 
@@ -121,11 +122,7 @@ fun(tree_type5, i)
 fun(tree_type6, i)
 fun(tree_type7, i)
 
-
-#glm1 <- glm(Slope~Elevation, data=train, family=poisson())
-#summary(glm1)
 ```
-
 
 Naive Bayes, Building the model
 ```{r}
