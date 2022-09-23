@@ -40,8 +40,23 @@ pie(slices,labels = labls, main="Types of Wild Area", col=c("green", "blue", "ye
 ```
 Logistic Regression
 ```{r}
-glm1 <- glm(Slope~Elevation, data=train, family=poisson())
-summary(glm1)
+tree_type1 <- df
+tree_type1$Cover_Type <- as.factor(ifelse (tree_type1$Cover_Type=="1",1,0))
+
+fun <- function(dataf){
+  glm1 <- glm(Cover_Type~., data=train, family=poisson())
+  probs <- predict(glm1, newdata=test)
+  pred <- ifelse(probs>0.5, 1, 0)
+  acc <- mean(pred==test$Cover_Type)
+  print(paste("accuracy = ", acc))
+  table(pred, test$Cover_Type)
+}
+
+fun(tree_type1)
+
+
+#glm1 <- glm(Slope~Elevation, data=train, family=poisson())
+#summary(glm1)
 ```
 
 
