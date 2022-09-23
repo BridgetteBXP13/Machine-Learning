@@ -28,6 +28,7 @@ str(train)
 ```
 ```{r}
 hist(train$Elevation)
+hist(train$Soil_Type)
 slices <- c(sum(train$Wilderness_Area1==1, na.rm=TRUE), sum(train$Wilderness_Area2==1, na.rm=TRUE), sum(train$Wilderness_Area3==1, na.rm=TRUE), sum(train$Wilderness_Area4==1, na.rm=TRUE))
 
 labls <- c("Wilds 1","Wilds 2","Wilds 3","Wilds 4")
