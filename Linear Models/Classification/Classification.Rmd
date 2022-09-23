@@ -128,13 +128,47 @@ library(e1071)
 nb1 <- naiveBayes(Cover_Type~., data=train)
 nb1
 ```
+The output above shows that it learned the following correlations and probabilities:
+
+The prior for the seven Cover Types is shown as roughly:
+36% for cover type 1, 49% for cover type 2, 6% for cover type 3, .5% for cover type 4, 1.6% for cover type 5, and 3% for cover type 6. This shows that cover type 1 and 2 are the most likely overall by a significant amount. 
+
+For the predictors: You can tell they are all continuous probabilities (don't sum to 1, instead they will give us the mean for each).
+
+Elevation:
+Here we can see that the means for elevation are all very similar and therefore don't tell us much by themselves. Some are a slightly higher such as for cover types 1, 2, 5, and 7, while the others are slightly lower. But overall there isn't a significant difference. 
+
+Aspect:
+Here we can see that the means for aspect are all very similar and therefore don't tell us much by themselves. Some are a slightly higher such as for cover types 3 and 6, with some slightly lower such as for cover types 4 and 5, but the rest are nearly the same. Overall there isn't a significant difference. 
+
+Slope:
+Here we can see that the means for slope are also all very similar and therefore don't tell us much by themselves. Some are a slightly higher such as for cover types 3, 4, and 6, with some slightly lower such as for cover types 1 and 2, and cover types 5 and 7 in the middle. Overall there isn't a significant difference.
+
+We see this pattern continue in the rest of the predictors except the following:
+
+Horizontal Distance to Roadways:
+In this one we can see that the means for cover types 1, 2, and 7 are about double compared to the rest of the means. This could indicate that the father away from a road way, the more likely it is to be cover type 1, 2, or 7. Also implies the closer to a road way, the more likely it is to be of the other cover types (3, 4 5, and 6).
+
+Horizontal Distance to Fire Points:
+Here we see again that the means for cover types 1, 2, and 7 are about double compared to the rest of the means. This could indicate that the father away from a fire point, the more likely it is to be cover type 1, 2, or 7. Also implies the closer to a fire point, the more likely it is to be of the other cover types (3, 4 5, and 6). It can also imply that fire points and road ways are highly correlated with one another.
+
+Wilderness Area 1:
+The means for cover types 3, 4, and 6 is 0, showing it is highly unlikely for those cover types to be in wilderness area 1. Cover types 1, 2, and 3 have means close to about .5 whereas cover type 7 has a mean of about .25 this shows that cover types 1, 2, and 3, are very likely, cover type 7 is about half as likely, and cover types 3, 4, 5, and 6 are very unlikely to be correlated with wilderness area 1.
+
+Wilderness Area 2:
+The means for cover types 3, 4, 5, and 6 is 0, showing it is highly unlikely for those cover types to be in wilderness area 2. Cover type 7 has a mean of about .1, cover type 1 has a mean of about .09, and cover type 2 has a mean of about .032. This shows that cover types 1 and 7 are about 3 times as likely as cover type 2, and cover types 3, 4, 5, and 6 are highly unlikely to be correlated with wilderness area 2. 
+
+Wilderness Area 3:
+The mean for cover type 4 is 0, showing it is highly unlikely for cover type 4 to be in wilderness area 3. Cover types 5 and 7 have means of about .63, and the rest of the cover types 1, 2, 3, and 6 have means of about .42. This shows that cover types 5 and 7 are more likely than cover types 1, 2, 3, and 6, and cover type 4 is highly unlikely to be correlated with wilderness area 3. 
+
+Wilderness Area 4:
+The means for cover types 1, 4, 5, and 7 is 0, showing it is highly unlikely for those cover types to be in wilderness area 4. Cover types 3 and 6 have means of about .58, and cover type 2 has a mean of about .01. This shows that cover types 31 and 6 are much more likely than cover type 2, and cover types 1, 4, 5, and 7 are highly unlikely to be correlated with wilderness area 4. 
+
+The soil types have very similar patterns, however there are 40 columns and it would be very lengthy to review all of them in this summary.
 
 Evaluate on the test data
 ```{r}
 pbayes <- predict(nb1, newdata=test, type="class")
 table(pbayes, test$Cover_Type)
-```
-```{r}
-getmode(pbayes==test$Cover_Type)
 ```
 
