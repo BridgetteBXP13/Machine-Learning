@@ -43,7 +43,7 @@ summary(glm1)
 Naive Bayes
 ```{r}
 library(e1071)
-nb1 <- naiveBayes(Hillshade9am~., data=train)
+nb1 <- naiveBayes(Slope~., data=train)
 nb1
 ```
 
