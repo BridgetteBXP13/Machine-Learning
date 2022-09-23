@@ -5,6 +5,7 @@ NetID: "IRK180000", "BMB180001"
 Assignment: "Linear Models"
 Date: "09/16/2021"
 ---
+Logistic Regression:
 
 Despite its name, in logistic regression we are classifying data. This means that the target variable is qualitative and we're trying to discern what class an observation is in. As such, linear models for logistic regression create decision boundaries to split observations into regions populated by mostly one classification. This is computationally inexpensive and works well when data can be separated cleanly (linearly). It also displays the probabilistic output in an manageable manner. This being said, a model is only as good as the data that is presented to it. When given a data set that is too small or unbalanced, the model itself isn't able to be trained well enough to be reliable for use in professional settings.It also tends to under fit data as it's not complex enough to capture non-linear decision boundaries. 
 ................
@@ -43,7 +44,9 @@ labls <- c("Wilds 1","Wilds 2","Wilds 3","Wilds 4")
 pie(slices,labels = labls, main="Types of Wild Area", col=c("green", "blue", "yellow", "red"))
 
 ```
-Logistic Regression
+Explanation of Logistic Regression below:
+
+
 ```{r}
 tree_type1 <- df
 tree_type1$Cover_Type <- as.factor(ifelse (tree_type1$Cover_Type=="1",1,0))
