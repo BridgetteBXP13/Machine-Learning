@@ -85,15 +85,15 @@ fun <- function(dataf, i){
   glm1 <- glm(Cover_Type~., data=funtrain, family="binomial")
   probs <- predict(glm1, newdata=funtest)
   pred <- ifelse(probs>0.5, 1, 0)
-  acc <- mean(pred==funtest$Cover_Type)
-  print(paste("accuracy = ", acc))
-  table(pred, funtest$Cover_Type)
+  funtable = table(factor(pred, levels=min(funtest):max(funtest)),
+        factor(funtest, levels=min(funtest):max(funtest)))
+  confusionMatrix(funtable)
 }
 
-fun(tree_type1, i)
-fun(tree_type2, i)
-fun(tree_type3, i)
-fun(tree_type4, i)
+#fun(tree_type1, i)
+#fun(tree_type2, i)
+#fun(tree_type3, i)
+#fun(tree_type4, i)
 fun(tree_type5, i)
 fun(tree_type6, i)
 fun(tree_type7, i)
@@ -174,14 +174,15 @@ The soil types have very similar patterns, however there are 40 columns and it w
 ## Evaluate on the test data
 ```{r}
 pbayes <- predict(nb1, newdata=test, type="class")
-table(pbayes, test$Cover_Type)
 mean(pbayes==test$Cover_Type)
 pbayes_raw <- predict(nb1, newdata=test, type="raw")
 head(pbayes_raw)
+confusionMatrix(data=pbayes, reference=test$Cover_Type)
 ```
 As seen above, our accuracy for bayes model is about 7%, which is significantly less than our logical regression model. I think a reason why is because of large our data set is, the bayes algorithm tends to perform better on smaller datasets than large ones such as this one. I also think that the means and variance for this dataset isn't super helpful for predictions when compared to a linear algorithm. The bayes class independence assumption causes it to perform very poorly here, as all the classes in our dataset are very much connected/dependent on one another, such as soil type, wilderness area, and elevation. 
 
 ## Classification Metrics:
+
 
 ### Accuracy:
 As shown from above, the overall accuracy our Logistic Regression Models was 90.9%. Whereas our accuracy from our Native Bayes Model was 7%. 
