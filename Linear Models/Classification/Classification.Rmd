@@ -83,17 +83,15 @@ fun <- function(dataf, i){
   funtrain <- dataf[i,]
   funtest <- dataf[-i,]
   glm1 <- glm(Cover_Type~., data=funtrain, family="binomial")
-  probs <- predict(glm1, newdata=funtest)
+  probs <- (predict(glm1, newdata=funtest))
   pred <- ifelse(probs>0.5, 1, 0)
-  funtable = table(factor(pred, levels=min(funtest):max(funtest)),
-        factor(funtest, levels=min(funtest):max(funtest)))
-  confusionMatrix(funtable)
+  confusionMatrix(data=as.factor(pred), reference=funtest$Cover_Type)
 }
 
-#fun(tree_type1, i)
-#fun(tree_type2, i)
-#fun(tree_type3, i)
-#fun(tree_type4, i)
+fun(tree_type1, i)
+fun(tree_type2, i)
+fun(tree_type3, i)
+fun(tree_type4, i)
 fun(tree_type5, i)
 fun(tree_type6, i)
 fun(tree_type7, i)
