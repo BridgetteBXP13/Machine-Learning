@@ -205,3 +205,7 @@ Specificity: True Negative Rate, (TN / (TN+FP))
 ## Classification Metrics: Benefits/Drawbacks
 
 
+Paragraph discussing the strengths and weaknesses of Naive Bayes and Logistic Regression
+
+Logistic regression is a very powerful tool. Not only is it a good way to classify data that is relatively low cost, but it is fairly accurate when classes are linearly separable and provides a nice probabilistic output. It can underfit data that is too complex for it to be able to split cleanly, meaning that it might not be as accurate with data sets that have high variance. 
+Naive Bayes works well with small data sets, is easy to implement, easy to understand, and can handle high dimensions as well. However, guesses are made for values in the test set that aren't present in the training set, can't perform as well when predictors are not independent, and can be outperformed when used on larger data sets.
