@@ -16,6 +16,7 @@ Loading in file and Libraries
 ```{r}
 library(caret)
 library(ROCR)
+library(mltools)
 df <- read.csv("covtype.csv")
 df$Cover_Type <- factor(df$Cover_Type)
 ```
@@ -87,7 +88,8 @@ fun <- function(dataf, i){
   glm1 <- glm(Cover_Type~., data=funtrain, family="binomial")
   probs <- (predict(glm1, newdata=funtest))
   pred <- ifelse(probs>0.5, 1, 0)
-  print(confusionMatrix(data=as.factor(pred), reference=funtest$Cover_Type))
+  confmatrix <- confusionMatrix(data=as.factor(pred), reference=funtest$Cover_Type)
+  print(confmatrix)
   
   p <- predict(glm1, newdata=funtest, type="response")
   pr <- prediction(p, funtest$Cover_Type)
@@ -97,6 +99,8 @@ fun <- function(dataf, i){
   auc <- performance(pr, measure="auc")
   auc <- auc@y.values[[1]]
   print(paste("AUC: ", auc))
+  
+  mcc(confusionM= as.matrix(confmatrix))
   
 }
 
@@ -212,6 +216,7 @@ Specificity: True Negative Rate, (TN / (TN+FP))
 ### ROC Curves and AUC:
 
 ### MCC:
+
 
 
 
