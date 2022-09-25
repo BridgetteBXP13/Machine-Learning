@@ -15,6 +15,7 @@ Despite its name, in logistic regression we are classifying data. This means tha
 Loading in file and Libraries
 ```{r}
 library(caret)
+library(ROCR)
 df <- read.csv("covtype.csv")
 df$Cover_Type <- factor(df$Cover_Type)
 ```
@@ -86,7 +87,17 @@ fun <- function(dataf, i){
   glm1 <- glm(Cover_Type~., data=funtrain, family="binomial")
   probs <- (predict(glm1, newdata=funtest))
   pred <- ifelse(probs>0.5, 1, 0)
-  confusionMatrix(data=as.factor(pred), reference=funtest$Cover_Type)
+  print(confusionMatrix(data=as.factor(pred), reference=funtest$Cover_Type))
+  
+  p <- predict(glm1, newdata=funtest, type="response")
+  pr <- prediction(p, funtest$Cover_Type)
+  prf <- performance(pr, measure="tpr", x.measure="fpr")
+  plot(prf)
+  
+  auc <- performance(pr, measure="auc")
+  auc <- auc@y.values[[1]]
+  print(paste("AUC: ", auc))
+  
 }
 
 fun(tree_type1, i)
@@ -172,10 +183,15 @@ The soil types have very similar patterns, however there are 40 columns and it w
 ## Evaluate on the test data
 ```{r}
 pbayes <- predict(nb1, newdata=test, type="class")
-mean(pbayes==test$Cover_Type)
+print(paste("Mean: ", mean(pbayes==test$Cover_Type)))
 pbayes_raw <- predict(nb1, newdata=test, type="raw")
 head(pbayes_raw)
 confusionMatrix(data=pbayes, reference=test$Cover_Type)
+prbayes <- prediction(p, test$Cover_Type)
+prf <- performance(pr, measure="tpr", x.measure="fpr")
+plot(prf)
+auc <- performance(pr, measure = "auc")
+print(paste("AUC: ", auc))
 ```
 As seen above, our accuracy for bayes model is about 7%, which is significantly less than our logical regression model. I think a reason why is because of large our data set is, the bayes algorithm tends to perform better on smaller datasets than large ones such as this one. I also think that the means and variance for this dataset isn't super helpful for predictions when compared to a linear algorithm. The bayes class independence assumption causes it to perform very poorly here, as all the classes in our dataset are very much connected/dependent on one another, such as soil type, wilderness area, and elevation. 
 
