@@ -191,13 +191,8 @@ print(paste("Mean: ", mean(pbayes==test$Cover_Type)))
 pbayes_raw <- predict(nb1, newdata=test, type="raw")
 head(pbayes_raw)
 confusionMatrix(data=pbayes, reference=test$Cover_Type)
-prbayes <- prediction(p, test$Cover_Type)
-prf <- performance(pr, measure="tpr", x.measure="fpr")
-plot(prf)
-auc <- performance(pr, measure = "auc")
-print(paste("AUC: ", auc))
 ```
-As seen above, our accuracy for bayes model is about 7%, which is significantly less than our logical regression model. I think a reason why is because of large our data set is, the bayes algorithm tends to perform better on smaller datasets than large ones such as this one. I also think that the means and variance for this dataset isn't super helpful for predictions when compared to a linear algorithm. The bayes class independence assumption causes it to perform very poorly here, as all the classes in our dataset are very much connected/dependent on one another, such as soil type, wilderness area, and elevation. 
+As seen above, our accuracy for bayes model is about 7%, which is significantly less than our logical regression model.We think a reason why is because of large our data set is, the bayes algorithm tends to perform better on smaller datasets than large ones such as this one. We also think that the means and variance for this dataset isn't super helpful for predictions when compared to a linear algorithm. The bayes class independence assumption causes it to perform very poorly here, as all the classes in our dataset are very much connected/dependent on one another, such as soil type, wilderness area, and elevation. 
 
 ## Classification Metrics:
 
