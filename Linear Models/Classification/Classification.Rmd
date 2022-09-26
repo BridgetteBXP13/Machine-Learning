@@ -201,26 +201,29 @@ As seen above, our accuracy for bayes model is about 7%, which is significantly 
 As shown from above, the overall accuracy our Logistic Regression Models was 90.9%. Whereas our accuracy from our Native Bayes Model was 7%. 
 
 ### Sensitivity and Specificity:
-Sensitivity: True Positive Rate, (TP / (TP+FN))
 
-Specificity: True Negative Rate, (TN / (TN+FP))
+#### Sensitivity: True Positive Rate, (TP / (TP+FN))
+
+As you can see from above our overall sensitivity rate is .96 for our One vs. All Logistic Regressions. For the bayes model it was ___. What this tells is is the true positive rate, so our logistic regression models had a very high true positive rate when predicting. 
+
+#### Specificity: True Negative Rate, (TN / (TN+FP))
+
+As you can see from above our overall sprecificity rate is .34 for our One vs. All Logistic Regressions. For the bayes model it was ___. What this tells is is the true negative rate, so our logistic regression models had a very low true negative rate when predicting.
 
 ### Kappa:
 
+Kappa attempts to adjust accuracy by accounting for correct prediction by chance. Our overall Kappa for our one vs. all logistic regressions is .36 which is a fair agreement. This means is better than chance, but not quite a good agreement either.  
 
 ### ROC Curves and AUC:
 
 ### MCC:
 
-
-
-
 ## Naive Bayes vs Logistic Regression
+
+Logistic regression is a very powerful tool. Not only is it a good way to classify data that is relatively low cost, but it is fairly accurate when classes are linearly separable and provides a nice probabilistic output. It can underfit data that is too complex for it to be able to split cleanly, meaning that it might not be as accurate with data sets that have high variance. 
+Naive Bayes works well with small data sets, is easy to implement, easy to understand, and can handle high dimensions as well. However, guesses are made for values in the test set that aren't present in the training set, can't perform as well when predictors are not independent, and can be outperformed when used on larger data sets.
 
 ## Classification Metrics: Benefits/Drawbacks
 
 
-Paragraph discussing the strengths and weaknesses of Naive Bayes and Logistic Regression
 
-Logistic regression is a very powerful tool. Not only is it a good way to classify data that is relatively low cost, but it is fairly accurate when classes are linearly separable and provides a nice probabilistic output. It can underfit data that is too complex for it to be able to split cleanly, meaning that it might not be as accurate with data sets that have high variance. 
-Naive Bayes works well with small data sets, is easy to implement, easy to understand, and can handle high dimensions as well. However, guesses are made for values in the test set that aren't present in the training set, can't perform as well when predictors are not independent, and can be outperformed when used on larger data sets.
