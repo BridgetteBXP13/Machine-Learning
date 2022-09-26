@@ -208,7 +208,7 @@ As you can see from above our overall sensitivity rate is .96 for our One vs. Al
 
 #### Specificity: True Negative Rate, (TN / (TN+FP))
 
-As you can see from above our overall sprecificity rate is .34 for our One vs. All Logistic Regressions. For the bayes model it was ___. What this tells is is the true negative rate, so our logistic regression models had a very low true negative rate when predicting.
+As you can see from above our overall specificity rate is .34 for our One vs. All Logistic Regressions. For the bayes model it was ___. What this tells is is the true negative rate, so our logistic regression models had a very low true negative rate when predicting.
 
 ### Kappa:
 
@@ -225,5 +225,5 @@ Naive Bayes works well with small data sets, is easy to implement, easy to under
 
 ## Classification Metrics: Benefits/Drawbacks
 
-
+Kappa tries to adjust the accuracy rate given to a model by taking into account the chance that some of the model's accuracy comes from chance alone. It assess how the actual and expected agreement compare to one another. The higher the number calculated, the better it is. It's very good to test the reliability of a model. ROC is a visualization of the performance of an algorithm and demonstrates the tradeoffs for predicting more true positives while avoiding false negatives. AUC shows us the area underneath the curve of an ROC diagram.MCC measures the differences between the predicted values and actual values for a model. Overall these metrics are good for getting a better understanding of how a algorithm works and the ways it could be improved, but they tend to be slow and can be difficult to implement. 
 
