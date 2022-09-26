@@ -210,7 +210,7 @@ As you can see from above our overall sensitivity rate is .96 for our One vs. Al
 <<<<<<< HEAD
 As you can see from above our overall specificity rate is .34 for our One vs. All Logistic Regressions. For the bayes model it was ___. What this tells is is the true negative rate, so our logistic regression models had a very low true negative rate when predicting.
 =======
-As you can see from above our overall sprecificity rate is .34 for our One vs. All Logistic Regressions. For the bayes model it was (overall of all classes) is .4 which is slightly higher than the logistic regressions. The Bayes model did better with specific cover types and was overall slightly better at predicting true negatives than our regression models.
+As you can see from above our overall specificity rate is .34 for our One vs. All Logistic Regressions. For the bayes model it was (overall of all classes) is .4 which is slightly higher than the logistic regressions. The Bayes model did better with specific cover types and was overall slightly better at predicting true negatives than our regression models.
 >>>>>>> b28417f772ccb35f26efecd191f5e7369306be33
 
 ### Kappa:
