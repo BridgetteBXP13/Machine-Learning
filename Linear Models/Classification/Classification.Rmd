@@ -100,7 +100,7 @@ fun <- function(dataf, i){
   auc <- auc@y.values[[1]]
   print(paste("AUC: ", auc))
   
-  mcc(confusionM= as.matrix(confmatrix))
+  #mcc(confusionM= as.matrix(confmatrix))
   
 }
 
@@ -196,27 +196,37 @@ As seen above, our accuracy for bayes model is about 7%, which is significantly 
 
 ## Classification Metrics:
 
-
 ### Accuracy:
-As shown from above, the overall accuracy our Logistic Regression Models was 90.9%. Whereas our accuracy from our Native Bayes Model was 7%. 
+As shown from above, the overall accuracy our Logistic Regression Models was 90.9%. Whereas our accuracy from our Native Bayes Model was 7%. According to this metric our logistic regression models are way more accurate than our bayes model.  
 
 ### Sensitivity and Specificity:
 
 #### Sensitivity: True Positive Rate, (TP / (TP+FN))
 
-As you can see from above our overall sensitivity rate is .96 for our One vs. All Logistic Regressions. For the bayes model it was ___. What this tells is is the true positive rate, so our logistic regression models had a very high true positive rate when predicting. 
+As you can see from above our overall sensitivity rate is .96 for our One vs. All Logistic Regressions. For the bayes model it was .04. However, for classes 4 and 7 the rate was very high, meaning it was giving true positives very well. What this tells is is the true positive rate, so our logistic regression models had a very high true positive rate when predicting. The Bayes model did better with specific cover types but was overall worse at predicting true positives than our regression models. 
 
 #### Specificity: True Negative Rate, (TN / (TN+FP))
 
+<<<<<<< HEAD
 As you can see from above our overall specificity rate is .34 for our One vs. All Logistic Regressions. For the bayes model it was ___. What this tells is is the true negative rate, so our logistic regression models had a very low true negative rate when predicting.
+=======
+As you can see from above our overall sprecificity rate is .34 for our One vs. All Logistic Regressions. For the bayes model it was (overall of all classes) is .4 which is slightly higher than the logistic regressions. The Bayes model did better with specific cover types and was overall slightly better at predicting true negatives than our regression models.
+>>>>>>> b28417f772ccb35f26efecd191f5e7369306be33
 
 ### Kappa:
 
-Kappa attempts to adjust accuracy by accounting for correct prediction by chance. Our overall Kappa for our one vs. all logistic regressions is .36 which is a fair agreement. This means is better than chance, but not quite a good agreement either.  
+Kappa attempts to adjust accuracy by accounting for correct prediction by chance. Our overall Kappa for our one vs. all logistic regressions is .36 which is a fair agreement. This means is better than chance, but not quite a good agreement either. For bayes it was .86 which is very good agreement, meaning that the model's predictions are better than chance. (Guessing wouldn't be equivalent) For classes 1, 2, 4, and 6 it was practically 1 meaning that the true negative for bayes is very good. The bayes model performed much better in for this metric than our logistic regression one vs all models. 
 
 ### ROC Curves and AUC:
 
-### MCC:
+This metric measures how well our model fits the data according to the true positive and false positive rates. Ideally the graph should be almost as square as possible to the y-axis until it tops off in a straight line. For our logistic regression one for all models by looking at these graphs and the area under the curve (AUC) we can conclude: 
+- Cover Type 1: The ROC graph is not very square and has a fair amount of curving in the top left. The AUC is .84 which is still considered excellent.
+- Cover Type 2: The ROC graph is not very square and has a fair amount of curving in the top left (slightly more than cover type 1). The AUC is .83 which is still considered excellent.
+- Cover Type 3: The ROC graph is very square and has almost no curving in the top left. The AUC is .98 which is considered outstanding.
+- Cover Type 4: The ROC graph is completely square and has no curving in the top left. The AUC is 1 which is considered outstanding.
+- Cover Type 5: The ROC graph is not square and has a lot of curving in the beginning and even starts off down and then moves up into a smooth curve. The AUC is .71 which is still considered acceptable.
+- Cover Type 6: The ROC graph is fairly square and has a little bit of curving in the top left. The AUC is .96 which is considered outstanding.
+- Cover Type 7: The ROC graph is very square and has almost no curving in the top left. The AUC is .98 which is considered outstanding.
 
 ## Naive Bayes vs Logistic Regression
 
