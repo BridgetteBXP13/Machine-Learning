@@ -1,18 +1,167 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "Searching for Similarity: Classification"
+author: "Isabelle Kirby, Bridgette Bryant, Rikita Patangay, Zuhayr Ali"
+output:
+  pdf_document: default
+  html_document: default
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+# Classification for Korea's top high elo teams in League of Legends
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+I utilized logistic regression and bayes to predict if the League of Legends team won or lost based on their stats for kills, deaths, gold, and vision scores. Our dataset has all these values in two datasets lose_team_stats.csv and win_team_stats.csv. Each game also has a gameId which is unique to that specific game. This ID is identical in each dataset. The win_team_stats.csv file contains the winning teams kills, deaths, gold earned, damage dealt, crowd control, and vision scores for each player. The lose_team_stats is the same but for the losing teams. These datasets are great because they contain nearly 100k games and have no NA/Null values. 
+
+
+## Cleaning Data
+
+First we have to unzip the archive (they are large data sets nearly 100k games). Then we will save the
+
 
 ```{r}
-plot(cars)
+
+win_stats_df <- read.csv((unz("League_Data/league_korea_high_elo_team_stats.zip", "win_team_stats.csv")))
+lose_stats_df <- read.csv((unz("League_Data/league_korea_high_elo_team_stats.zip", "lose_team_stats.csv")))
+
+str(win_stats_df)
+str(lose_stats_df)
+
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+Now we will merge the two data sets together based on their matching gameId column. This way our model can catagorize our data by team 0 or team 1 winning based on both teams contrasting stats.
+```{r}
+# Replacing column names for rbind
+colnames(win_stats_df) <- c('kill1', 'kill2', 'kill3', 'kill4', 'kill5', 'death1', 'death2', 'death3', 'death4', 'death5', 'totalDamageDealtToChampions1', 'totalDamageDealtToChampions2', 'totalDamageDealtToChampions3', 'totalDamageDealtToChampions4', 'totalDamageDealtToChampions5', 'goldEarned1', 'goldEarned2', 'goldEarned3', 'goldEarned4', 'goldEarned5', 'visionScore1', 'visionScore2', 'visionScore3', 'visionScore4', 'visionScore5', 'totalTimeCrowdControlDealt1', 'totalTimeCrowdControlDealt2', 'totalTimeCrowdControlDealt3', 'totalTimeCrowdControlDealt4', 'totalTimeCrowdControlDealt5', 'gameId')
+colnames(lose_stats_df) <- c('kill1', 'kill2', 'kill3', 'kill4', 'kill5', 'death1', 'death2', 'death3', 'death4', 'death5', 'totalDamageDealtToChampions1', 'totalDamageDealtToChampions2', 'totalDamageDealtToChampions3', 'totalDamageDealtToChampions4', 'totalDamageDealtToChampions5', 'goldEarned1', 'goldEarned2', 'goldEarned3', 'goldEarned4', 'goldEarned5', 'visionScore1', 'visionScore2', 'visionScore3', 'visionScore4', 'visionScore5', 'totalTimeCrowdControlDealt1', 'totalTimeCrowdControlDealt2', 'totalTimeCrowdControlDealt3', 'totalTimeCrowdControlDealt4', 'totalTimeCrowdControlDealt5', 'gameId')
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+# Adding column based on dataset it is in
+library(dplyr)
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+win_stats_df <- win_stats_df %>%
+  mutate(won=1)
+
+lose_stats_df <- lose_stats_df %>%
+  mutate(won =0)
+
+#full_stats_df <- merge(win_stats_df, lose_stats_df, by = "gameId")
+full_stats_df <- rbind(win_stats_df, lose_stats_df)
+drop <- c("gameId")
+full_stats_df <- full_stats_df[,!(names(full_stats_df) %in% drop)]
+str(full_stats_df)
+```
+Next let's randomly divide the data into train and test:
+
+```{r}
+set.seed(1010)
+i <- sample(1:nrow(full_stats_df), .75*nrow(full_stats_df), replace=FALSE)
+full_stats_train <- full_stats_df[i,]
+full_stats_test <- full_stats_df[-i,]
+```
+
+
+## Data Exploration
+
+Next we will plot some of our data to see possible differences/correlations. Time to do some data exploration.
+
+```{r}
+boxplot(full_stats_train$won, full_stats_train$death1+full_stats_train$death2+full_stats_train$death3+full_stats_train$death4+full_stats_train$death5, main="Won and Deaths", xlab="Won", ylab="Total Deaths", outline = FALSE, col = 'aquamarine')
+
+boxplot(full_stats_train$won, full_stats_train$kill1+full_stats_train$kill2+full_stats_train$kill3+full_stats_train$kill4+full_stats_train$kill5, main="Won and kills", xlab="Won", ylab="Total kills", outline = FALSE, col = 'azure')
+
+boxplot(full_stats_train$won, full_stats_train$goldEarned1+full_stats_train$goldEarned2+full_stats_train$goldEarned3+full_stats_train$goldEarned4+full_stats_train$goldEarned5, main="Won and Gold Earned", xlab="Won", ylab="Total Gold Earned", outline = FALSE, col = 'beige')
+
+boxplot(full_stats_train$won, full_stats_train$visionScore1+full_stats_train$visionScore2+full_stats_train$visionScore3+full_stats_train$visionScore4+full_stats_train$visionScore5, main="Won and Vision Score", xlab="Won", ylab="Total Vision Score", outline = FALSE, col = 'bisque')
+
+boxplot(full_stats_train$won, full_stats_train$totalTimeCrowdControlDealt1+full_stats_train$totalTimeCrowdControlDealt2+full_stats_train$totalTimeCrowdControlDealt3+full_stats_train$totalTimeCrowdControlDealt4+full_stats_train$totalTimeCrowdControlDealt5, main="Won and totalTimeCrowdControlDealt", xlab="Won", ylab="Total totalTimeCrowdControlDealt", outline = FALSE, col='red')
+
+plot(full_stats_train$kill1+full_stats_train$kill2+full_stats_train$kill3+full_stats_train$kill4+full_stats_train$kill5,full_stats_train$goldEarned1+full_stats_train$goldEarned2+full_stats_train$goldEarned3+full_stats_train$goldEarned4+full_stats_train$goldEarned5, main="Kills and Gold Earned", xlab="Kills", ylab="Total Gold Earned", col = rep(1:6))
+
+plot(full_stats_train$death1+full_stats_train$death2+full_stats_train$death3+full_stats_train$death4+full_stats_train$death5,full_stats_train$goldEarned1+full_stats_train$goldEarned2+full_stats_train$goldEarned3+full_stats_train$goldEarned4+full_stats_train$goldEarned5, main="Deaths and Gold Earned", xlab="Deaths", ylab="Total Gold Earned", col = rep(6:12))
+
+plot(full_stats_train$visionScore1+full_stats_train$visionScore2+full_stats_train$visionScore3+full_stats_train$visionScore4+full_stats_train$visionScore5,full_stats_train$goldEarned1+full_stats_train$goldEarned2+full_stats_train$goldEarned3+full_stats_train$goldEarned4+full_stats_train$goldEarned5, main="Vision Score and Gold Earned", xlab="Vision Score", ylab="Total Gold Earned", col = rep(12:18))
+
+plot(full_stats_train$totalTimeCrowdControlDealt1+full_stats_train$totalTimeCrowdControlDealt2+full_stats_train$totalTimeCrowdControlDealt3+full_stats_train$totalTimeCrowdControlDealt4+full_stats_train$totalTimeCrowdControlDealt5,full_stats_train$goldEarned1+full_stats_train$goldEarned2+full_stats_train$goldEarned3+full_stats_train$goldEarned4+full_stats_train$goldEarned5, main="totalTimeCrowdControlDealt and Gold Earned", xlab="totalTimeCrowdControlDealt", ylab="Total Gold Earned", col = rep(18:24))
+
+```
+
+## Logistic Regression
+
+### Training
+
+Now we will build our logistic regression model
+```{r}
+glm_won <- glm(won~., data=full_stats_train, family = "binomial")
+summary(glm_won)
+```
+
+### Testing & Evaluation
+
+Now we can evaluate on the test set:
+
+```{r}
+library(caret)
+glm_probs <- predict(glm_won, newdata = full_stats_test, type = "response")
+glm_pred <- ifelse(glm_probs > 0.5, 1, 0)
+glm_acc <- mean(glm_pred == full_stats_test$won)
+
+confusionMatrix(as.factor(glm_pred), reference = as.factor(full_stats_test$won))
+```
+## kNN Classification
+
+### Normalization, Training, and Testing
+
+```{r}
+normalize <- function(x) {
+  return ((x - min(x)) / (max(x) - min(x)))
+}
+full_stats_df_normalized <- as.data.frame(lapply(full_stats_df[, 1:30], normalize))
+head(full_stats_df_normalized)
+
+library(class)
+set.seed(1010)
+ind <- sample(1:nrow(full_stats_df_normalized), size=nrow(full_stats_df_normalized) * .70, replace = FALSE)
+k_train <- full_stats_df[ind,]
+k_test <- full_stats_df[-ind,]
+k_trainLabels <- full_stats_df[ind, 31]
+k_testLabels <- full_stats_df[-ind, 31]
+knn_pred <- knn(train = k_train, test = k_test, cl = k_trainLabels, k = 425) # I choose k = 425 because we have 181000 observations and the sqrt(181000) is 425
+```
+
+
+### Evaluating
+
+```{r}
+
+confusionMatrix(as.factor(knn_pred), reference = as.factor(k_test$won))
+
+```
+
+## Decision Trees for Classification
+
+### Display the tree
+
+```{r}
+library(tree)
+stats_tree <- tree(won~., data = full_stats_df)
+stats_tree
+summary(stats_tree)
+plot(stats_tree)
+text(stats_tree, cex = .75, pretty = 0)
+```
+
+### Train & Test
+
+```{r}
+set.seed(1010)
+i <- sample(181000, 45250, replace=FALSE)
+tree_train <- full_stats_df[i,]
+tree_test <- full_stats_df[-i,]
+stats_train_tree <- tree(as.factor(won)~., data = tree_train)
+print(stats_train_tree)
+tree_pred <- predict(stats_train_tree, newdata = tree_test, type = "class")
+```
+
+### Evaluation
+
+```{r}
+confusionMatrix(as.factor(tree_pred), reference = as.factor(tree_test$won))
+```
+
