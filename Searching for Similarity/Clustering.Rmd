@@ -1,18 +1,79 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "Searching for Similarity: Classification"
+author: "Isabelle Kirby, Bridgette Bryant, Rikita Patangay, Zuhayr Ali"
+output:
+  pdf_document: default
+  html_document: default
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+First we have to unzip the archive (they are large data sets nearly 100k games). Then we will save them into data frames.
 
 ```{r}
-plot(cars)
+library(pvclust)
+library(flexclust)
+
+win_stats_df <- read.csv((unz("League_Data/league_korea_high_elo_team_stats.zip", "win_team_stats.csv")))
+lose_stats_df <- read.csv((unz("League_Data/league_korea_high_elo_team_stats.zip", "lose_team_stats.csv")))
+
+str(win_stats_df)
+str(lose_stats_df)
+```
+Then we combine each dataframe by their corresponding gameID.
+```{r}
+# Replacing column names for rbind
+colnames(win_stats_df) <- c('kill1', 'kill2', 'kill3', 'kill4', 'kill5', 'death1', 'death2', 'death3', 'death4', 'death5', 'totalDamageDealtToChampions1', 'totalDamageDealtToChampions2', 'totalDamageDealtToChampions3', 'totalDamageDealtToChampions4', 'totalDamageDealtToChampions5', 'goldEarned1', 'goldEarned2', 'goldEarned3', 'goldEarned4', 'goldEarned5', 'visionScore1', 'visionScore2', 'visionScore3', 'visionScore4', 'visionScore5', 'totalTimeCrowdControlDealt1', 'totalTimeCrowdControlDealt2', 'totalTimeCrowdControlDealt3', 'totalTimeCrowdControlDealt4', 'totalTimeCrowdControlDealt5', 'gameId')
+colnames(lose_stats_df) <- c('kill1', 'kill2', 'kill3', 'kill4', 'kill5', 'death1', 'death2', 'death3', 'death4', 'death5', 'totalDamageDealtToChampions1', 'totalDamageDealtToChampions2', 'totalDamageDealtToChampions3', 'totalDamageDealtToChampions4', 'totalDamageDealtToChampions5', 'goldEarned1', 'goldEarned2', 'goldEarned3', 'goldEarned4', 'goldEarned5', 'visionScore1', 'visionScore2', 'visionScore3', 'visionScore4', 'visionScore5', 'totalTimeCrowdControlDealt1', 'totalTimeCrowdControlDealt2', 'totalTimeCrowdControlDealt3', 'totalTimeCrowdControlDealt4', 'totalTimeCrowdControlDealt5', 'gameId')
+
+# Adding column based on dataset it is in
+library(dplyr)
+
+win_stats_df <- win_stats_df %>%
+  mutate(won=1)
+
+lose_stats_df <- lose_stats_df %>%
+  mutate(won =0)
+
+#full_stats_df <- merge(win_stats_df, lose_stats_df, by = "gameId")
+full_stats_df <- rbind(win_stats_df, lose_stats_df)
+drop <- c("gameId")
+full_stats_df <- full_stats_df[,!(names(full_stats_df) %in% drop)]
+str(full_stats_df)
+```
+After merging the two datasets, we perform the kmeans on the data.
+```{r}
+set.seed(1234)
+lolCluster <- kmeans( full_stats_df, 5)
+lolCluster
+```
+This is another way to show how the clustering happened.
+```{r}
+table(lolCluster$cluster, full_stats_df$won)
+```
+Now to plot the kmeans.
+```{r}
+plot(full_stats_df$kill5, full_stats_df$totalDamageDealtToChampions5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
+
+plot(full_stats_df$totalDamageDealtToChampions1+full_stats_df$totalDamageDealtToChampions2+full_stats_df$totalDamageDealtToChampions3+full_stats_df$totalDamageDealtToChampions4+full_stats_df$totalDamageDealtToChampions5, full_stats_df$kill1+full_stats_df$kill2+full_stats_df$kill3+full_stats_df$kill4+full_stats_df$kill5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
+
+plot(full_stats_df$totalDamageDealtToChampions1+full_stats_df$totalDamageDealtToChampions2+full_stats_df$totalDamageDealtToChampions3+full_stats_df$totalDamageDealtToChampions4+full_stats_df$totalDamageDealtToChampions5, full_stats_df$totalTimeCrowdControlDealt1+full_stats_df$totalTimeCrowdControlDealt2+full_stats_df$totalTimeCrowdControlDealt3+full_stats_df$totalTimeCrowdControlDealt4+full_stats_df$totalTimeCrowdControlDealt5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
+
+plot(full_stats_df$goldEarned1+full_stats_df$goldEarned2+full_stats_df$goldEarned3+full_stats_df$goldEarned4+full_stats_df$goldEarned5, full_stats_df$visionScore1+full_stats_df$visionScore2+full_stats_df$visionScore3+full_stats_df$visionScore4+full_stats_df$visionScore5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
+
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+Finally its time for the hierarchical clustering. This takes 25% of the data (all randomly selected) and puts it into another dataframe as there was too much data initially to perform hierarchical clustering. After that I scaled the data and plotted the hierarchical clustering.
+```{r}
+set.seed(1010)
+i <- sample(1:nrow(full_stats_df), .75*nrow(full_stats_df), replace=FALSE)
+full_stats_smol <- full_stats_df[-i,]
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+full.scaled <- scale(full_stats_smol)
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+d <- dist(full.scaled)
+fit.average <- hclust(d, method="average")
+plot(fit.average, hang=-1, cex=.8, main="Hierarchical Clustering")
+```
+Overall, I felt as though I understood kmeans more that I understood hierarchical clustering (HC). For this data set, the HC makes little to no sense, possibly due to the abundance of rows. 
+
