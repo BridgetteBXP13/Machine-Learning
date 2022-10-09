@@ -54,6 +54,13 @@ table(lolCluster$cluster, full_stats_df$won)
 Now to plot the kmeans.
 ```{r}
 plot(full_stats_df$kill5, full_stats_df$totalDamageDealtToChampions5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
+
+plot(full_stats_df$totalDamageDealtToChampions1+full_stats_df$totalDamageDealtToChampions2+full_stats_df$totalDamageDealtToChampions3+full_stats_df$totalDamageDealtToChampions4+full_stats_df$totalDamageDealtToChampions5, full_stats_df$kill1+full_stats_df$kill2+full_stats_df$kill3+full_stats_df$kill4+full_stats_df$kill5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
+
+plot(full_stats_df$totalDamageDealtToChampions1+full_stats_df$totalDamageDealtToChampions2+full_stats_df$totalDamageDealtToChampions3+full_stats_df$totalDamageDealtToChampions4+full_stats_df$totalDamageDealtToChampions5, full_stats_df$totalTimeCrowdControlDealt1+full_stats_df$totalTimeCrowdControlDealt2+full_stats_df$totalTimeCrowdControlDealt3+full_stats_df$totalTimeCrowdControlDealt4+full_stats_df$totalTimeCrowdControlDealt5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
+
+plot(full_stats_df$goldEarned1+full_stats_df$goldEarned2+full_stats_df$goldEarned3+full_stats_df$goldEarned4+full_stats_df$goldEarned5, full_stats_df$visionScore1+full_stats_df$visionScore2+full_stats_df$visionScore3+full_stats_df$visionScore4+full_stats_df$visionScore5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
+
 ```
 
 Finally its time for the hierarchical clustering. This takes 25% of the data (all randomly selected) and puts it into another dataframe as there was too much data initially to perform hierarchical clustering. After that I scaled the data and plotted the hierarchical clustering.
