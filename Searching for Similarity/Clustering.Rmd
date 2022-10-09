@@ -12,6 +12,7 @@ First we have to unzip the archive (they are large data sets nearly 100k games).
 
 ```{r}
 library(pvclust)
+library(flexclust)
 
 win_stats_df <- read.csv((unz("League_Data/league_korea_high_elo_team_stats.zip", "win_team_stats.csv")))
 lose_stats_df <- read.csv((unz("League_Data/league_korea_high_elo_team_stats.zip", "lose_team_stats.csv")))
@@ -19,7 +20,7 @@ lose_stats_df <- read.csv((unz("League_Data/league_korea_high_elo_team_stats.zip
 str(win_stats_df)
 str(lose_stats_df)
 ```
-Then we combine each dataframe by their corresponding gameID
+Then we combine each dataframe by their corresponding gameID.
 ```{r}
 # Replacing column names for rbind
 colnames(win_stats_df) <- c('kill1', 'kill2', 'kill3', 'kill4', 'kill5', 'death1', 'death2', 'death3', 'death4', 'death5', 'totalDamageDealtToChampions1', 'totalDamageDealtToChampions2', 'totalDamageDealtToChampions3', 'totalDamageDealtToChampions4', 'totalDamageDealtToChampions5', 'goldEarned1', 'goldEarned2', 'goldEarned3', 'goldEarned4', 'goldEarned5', 'visionScore1', 'visionScore2', 'visionScore3', 'visionScore4', 'visionScore5', 'totalTimeCrowdControlDealt1', 'totalTimeCrowdControlDealt2', 'totalTimeCrowdControlDealt3', 'totalTimeCrowdControlDealt4', 'totalTimeCrowdControlDealt5', 'gameId')
@@ -40,33 +41,32 @@ drop <- c("gameId")
 full_stats_df <- full_stats_df[,!(names(full_stats_df) %in% drop)]
 str(full_stats_df)
 ```
-
+After merging the two datasets, we perform the kmeans on the data.
 ```{r}
 set.seed(1234)
 lolCluster <- kmeans( full_stats_df, 5)
 lolCluster
 ```
+This is another way to show how the clustering happened.
 ```{r}
 table(lolCluster$cluster, full_stats_df$won)
 ```
+Now to plot the kmeans.
 ```{r}
 plot(full_stats_df$kill5, full_stats_df$totalDamageDealtToChampions5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
 ```
 
-
-```{r}
-head(full_stats_df)
-fullstats.scaled <- scale(full_stats_df)
-head(fullstats.scaled)
-```
-
+Finally its time for the hierarchical clustering. This takes 25% of the data (all randomly selected) and puts it into another dataframe as there was too much data initially to perform hierarchical clustering. After that I scaled the data and plotted the hierarchical clustering.
 ```{r}
 set.seed(1010)
 i <- sample(1:nrow(full_stats_df), .75*nrow(full_stats_df), replace=FALSE)
-full_stats_train <- full_stats_df[i,]
-full_stats_test <- full_stats_df[-i,]
-transPosed <- t(full_stats_test)
-fit <- pvclust(transPosed, method.hclust="ward", method.dist="euclidean")
-plot(fit)
+full_stats_smol <- full_stats_df[-i,]
+
+full.scaled <- scale(full_stats_smol)
+
+d <- dist(full.scaled)
+fit.average <- hclust(d, method="average")
+plot(fit.average, hang=-1, cex=.8, main="Hierarchical Clustering")
 ```
+Overall, I felt as though I understood kmeans more that I understood hierarchical clustering (HC). For this data set, the HC makes little to no sense, possibly due to the abundance of rows. 
 
