@@ -165,3 +165,17 @@ tree_pred <- predict(stats_train_tree, newdata = tree_test, type = "class")
 confusionMatrix(as.factor(tree_pred), reference = as.factor(tree_test$won))
 ```
 
+## Logistic Regression vs kNN vs Decision Trees
+Analyzing the results of each model based on the algorithms.
+
+### Logistic Regression
+
+The Logistic Regression model had a high accuracy of about 96%, a Kappa value of about .91, a p-value of 7.574e-05, a sensitivity value of about .96, and a specificity of about .95. These are all very good metrics for a model. I believe the logistic regression model performed so well because it is a linear classifier and the data is very linear. Therefore computing log odds and probabilities linearly for the data was very effective.
+
+### kNN Classification
+
+The kNN Classification model had an accuracy of about 67%, a Kappa value of about .34, a p-value of 2.2e-16, a sensitivity value of about .56, and a specificity value of about .78. These metrics aren't nearly as impressive looking compared to the logistic regression. However, you have to take into consideration how much variance there is in the data and that looking at nearest neighbors might not be as accurate as comparing the stats linearly. For this algorithm I had to normalize the data and use the square root of the size of the data in order to achieve the highest accuracy of 67%, before this it was around 50%. We also have many predictors in this data set where kNN prefers fewer predictors, if I were to limit the predictors/combine some of them it would likely perform better.
+
+### Decision Trees
+
+The Decision Trees model had an accuracy of about 77%, a Kappa value of about .55, a p-value of 2.2e-16, a sensitivity value of about .75, and a specificity value of about .8. These are some pretty fair metrics overall. The tree itself is actually quite simple if you understand the data and what the predictors mean. It is clear which ones cause splits between likely to win or lose, I think it is fairly accurate because it was easy for the tree to make splits in the linear data based on the many predictors.
