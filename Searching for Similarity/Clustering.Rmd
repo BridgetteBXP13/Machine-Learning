@@ -13,6 +13,8 @@ First we have to unzip the archive (they are large data sets nearly 100k games).
 ```{r}
 library(pvclust)
 library(flexclust)
+library(fpc)
+library(cluster)
 
 win_stats_df <- read.csv((unz("League_Data/league_korea_high_elo_team_stats.zip", "win_team_stats.csv")))
 lose_stats_df <- read.csv((unz("League_Data/league_korea_high_elo_team_stats.zip", "lose_team_stats.csv")))
@@ -41,39 +43,70 @@ drop <- c("gameId")
 full_stats_df <- full_stats_df[,!(names(full_stats_df) %in% drop)]
 str(full_stats_df)
 ```
+```{r}
+set.seed(1010)
+i <- sample(1:nrow(full_stats_df), .75*nrow(full_stats_df), replace=FALSE)
+full_stats_smol <- full_stats_df[-i,]
+
+j <- sample(1:nrow(win_stats_df), .5*nrow(win_stats_df), replace=FALSE)
+win_stats_smol <- win_stats_df[j,]
+
+lolDataless <- full_stats_smol %>% rowwise() %>% mutate(TotalKill = sum(c_across(kill1:kill5)))
+
+lolDataless <- lolDataless %>% rowwise() %>% mutate(TotalDeath = sum(c_across(death1:death5)))
+
+lolDataless <- lolDataless %>% rowwise() %>% mutate(TotalDamage = sum(c_across(totalDamageDealtToChampions1:totalDamageDealtToChampions5)))
+
+lolDataless <- lolDataless %>% rowwise() %>% mutate(TotalGold = sum(c_across(goldEarned1:goldEarned5)))
+
+lolDataless <- lolDataless %>% rowwise() %>% mutate(TotalVision = sum(c_across(visionScore1:visionScore5)))
+
+lolDataless <- lolDataless %>% rowwise() %>% mutate(TotalCrowdControl = sum(c_across(totalTimeCrowdControlDealt1:totalTimeCrowdControlDealt5)))
+
+drop <- c('kill1', 'kill2', 'kill3', 'kill4', 'kill5', 'death1', 'death2', 'death3', 'death4', 'death5', 'totalDamageDealtToChampions1', 'totalDamageDealtToChampions2', 'totalDamageDealtToChampions3', 'totalDamageDealtToChampions4', 'totalDamageDealtToChampions5', 'goldEarned1', 'goldEarned2', 'goldEarned3', 'goldEarned4', 'goldEarned5', 'visionScore1', 'visionScore2', 'visionScore3', 'visionScore4', 'visionScore5', 'totalTimeCrowdControlDealt1', 'totalTimeCrowdControlDealt2', 'totalTimeCrowdControlDealt3', 'totalTimeCrowdControlDealt4', 'totalTimeCrowdControlDealt5')
+
+lolDataless = lolDataless[, !(names(lolDataless) %in% drop)]
+```
+
 After merging the two datasets, we perform the kmeans on the data.
 ```{r}
 set.seed(1234)
-lolCluster <- kmeans( full_stats_df, 5)
+lolCluster <- kmeans( lolDataless, 5)
 lolCluster
 ```
 This is another way to show how the clustering happened.
 ```{r}
-table(lolCluster$cluster, full_stats_df$won)
+table(lolCluster$cluster, lolDataless$won)
 ```
 Now to plot the kmeans.
 ```{r}
-plot(full_stats_df$kill5, full_stats_df$totalDamageDealtToChampions5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
-
 plot(full_stats_df$totalDamageDealtToChampions1+full_stats_df$totalDamageDealtToChampions2+full_stats_df$totalDamageDealtToChampions3+full_stats_df$totalDamageDealtToChampions4+full_stats_df$totalDamageDealtToChampions5, full_stats_df$kill1+full_stats_df$kill2+full_stats_df$kill3+full_stats_df$kill4+full_stats_df$kill5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
 
 plot(full_stats_df$totalDamageDealtToChampions1+full_stats_df$totalDamageDealtToChampions2+full_stats_df$totalDamageDealtToChampions3+full_stats_df$totalDamageDealtToChampions4+full_stats_df$totalDamageDealtToChampions5, full_stats_df$totalTimeCrowdControlDealt1+full_stats_df$totalTimeCrowdControlDealt2+full_stats_df$totalTimeCrowdControlDealt3+full_stats_df$totalTimeCrowdControlDealt4+full_stats_df$totalTimeCrowdControlDealt5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
 
 plot(full_stats_df$goldEarned1+full_stats_df$goldEarned2+full_stats_df$goldEarned3+full_stats_df$goldEarned4+full_stats_df$goldEarned5, full_stats_df$visionScore1+full_stats_df$visionScore2+full_stats_df$visionScore3+full_stats_df$visionScore4+full_stats_df$visionScore5, pch=21, bg=c("red", "orange", "yellow" , "green", "blue" )[unclass(lolCluster$cluster)], main="League of Legends Dataset")
 
+
 ```
+
 
 Finally its time for the hierarchical clustering. This takes 25% of the data (all randomly selected) and puts it into another dataframe as there was too much data initially to perform hierarchical clustering. After that I scaled the data and plotted the hierarchical clustering.
 ```{r}
-set.seed(1010)
-i <- sample(1:nrow(full_stats_df), .75*nrow(full_stats_df), replace=FALSE)
-full_stats_smol <- full_stats_df[-i,]
-
-full.scaled <- scale(full_stats_smol)
+full.scaled <- scale(lolDataless)
 
 d <- dist(full.scaled)
 fit.average <- hclust(d, method="average")
 plot(fit.average, hang=-1, cex=.8, main="Hierarchical Clustering")
 ```
-Overall, I felt as though I understood kmeans more that I understood hierarchical clustering (HC). For this data set, the HC makes little to no sense, possibly due to the abundance of rows. 
+
+```{r}
+tlolDataless <- t(lolDataless)
+fit2 <- pvclust(tlolDataless, method.hclust = "ward", method.dist = "euclidean")
+plot(fit2)
+pvrect(fit2, alpha=.95)
+```
+
+Overall, I felt as though I understood kmeans more than I understood hierarchical clustering (HC). For this data set, the HC makes little to no sense, possibly due to the abundance of rows and columns.The kmeans shows similarities and differences between players, highlighting the one (yellow) who may have played a healer role (leading to less impressive damage and kill stats) or was simply a new player.
+Hierarchical clustering didn't seem to be very useful for this dataset. I think with the large number of columns we had present, it was ver 
+
 
