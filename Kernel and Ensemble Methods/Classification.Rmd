@@ -8,7 +8,7 @@ output:
 
 # SVM Classification for Korea's top high elo teams in League of Legends
 
-<bleh> 
+I utilized SVM linear, polynomial, and radial kernels to classify the League of Legends team won or lost based on the total team stats for kills, deaths, gold, and vision scores. Our dataset has all these values in two datasets lose_team_stats.csv and win_team_stats.csv. Each game also has a gameId which is unique to that specific game. This ID is identical in each dataset. The win_team_stats.csv file contains the winning teams kills, deaths, gold earned, damage dealt, crowd control, and vision scores for each player. The lose_team_stats is the same but for the losing teams. These datasets are great because they contain nearly 100k games and have no NA/Null values.
 
 
 ## Cleaning Data
@@ -201,12 +201,20 @@ Analyzing the results of each model based on the algorithms.
 
 ### SVM Linear
 
-<bleh>
+Our SVM Linear model utilized 3128 support vectors along the margin. It had an accuracy of 95.48%, the balanced accuracy is the same! This is a fairly high accuracy, which isn't surprising to me because our data as seen in the graphs is very linear and could be split easily using a linear function. The sensitivity is about .96 and the specificity is about .95 which are both close to 1 and very good. The p-value is also very low which shows this a good model. The Kappas is about .91, which shows a excellent positive agreement. Overall, this model has very good metrics and is a very good model for our data.
+
 
 ### SVM Polynomial
 
-<bleh>
+Our SVM Linear model utilized 5197 support vectors along the margin. It had an accuracy of 95.54%, the balanced accuracy is the same! This is a fairly high accuracy, which isn't surprising to me because our data as seen in the graphs is very linear and could be split easily using a polynomial function. The sensitivity is about .94 and the specificity is about .96 which are both close to 1 and very good. The p-value is also very low which shows this a good model. The Kappas is about .91, which shows a excellent positive agreement. Overall, this model has very good metrics and is a very good model for our data.
+
 
 ### SVM Radial
 
-<bleh>
+Our SVM Linear model utilized 2914 support vectors along the margin. It had an accuracy of 95.54%, the balanced accuracy is 95.53%. This is a fairly high accuracy, which isn't surprising to me because our data as seen in the graphs is very linear and could be split easily using a polynomial function. The sensitivity is about .94 and the specificity is about .96 which are both close to 1 and very good. The p-value is also very low which shows this a good model. The Kappas is about .91, which shows a excellent positive agreement. Overall, this model has very good metrics and is a very good model for our data.
+
+
+### Summary
+
+The SVM Polynomial had the most support vectors and highest accuracy of all the models. Therefore, I believe it is the best model out of the three. The SVM Radial model has the second highest (balanced) accuracy but the least support vectors. Which I found interesting as I didn't think the data could be represented easily by a radial model, however since there is a fair amount of clusters in the data as seen in the graphs it makes some sense. The SVM Linear model had the second most support vectors and the lowest accuracy, however this model still does a good job of representing the data. Overall, all of the models are very good and represent our data very well. 
+
