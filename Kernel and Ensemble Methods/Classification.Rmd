@@ -131,7 +131,7 @@ confusionMatrix(as.factor(glm_pred), reference = full_stats_test$won)
 
 #### Training
 
-Now we will build our logistic regression model
+Now we will build our SVM Linear model
 ```{r}
 library(e1071)
 svm_lin <- svm(won~., data=full_stats_train, kernel="linear", cost=10, scale=TRUE)
@@ -189,7 +189,7 @@ plot(best_lin_model, full_stats_test, TotalKill ~ TotalDamage)
 
 #### Training
 
-Now we will build our logistic regression model
+Now we will build our SVM Polynomial model
 ```{r}
 library(e1071)
 svm_poly <- svm(won~., data=full_stats_train, kernel="polynomial", cost=10, scale=TRUE)
@@ -247,7 +247,7 @@ plot(best_poly_model, full_stats_test, TotalKill ~ TotalDamage)
 
 #### Training
 
-Now we will build our logistic regression model
+Now we will build our SVM Radial model
 ```{r}
 library(e1071)
 svm_rad <- svm(won~., data=full_stats_train, kernel="radial", cost=10, scale=TRUE)
