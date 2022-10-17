@@ -6,9 +6,9 @@ output:
   html_document: default
 ---
 
-# Classification for Korea's top high elo teams in League of Legends
+# SVM Classification for Korea's top high elo teams in League of Legends
 
-I utilized logistic regression and bayes to predict if the League of Legends team won or lost based on their stats for kills, deaths, gold, and vision scores. Our dataset has all these values in two datasets lose_team_stats.csv and win_team_stats.csv. Each game also has a gameId which is unique to that specific game. This ID is identical in each dataset. The win_team_stats.csv file contains the winning teams kills, deaths, gold earned, damage dealt, crowd control, and vision scores for each player. The lose_team_stats is the same but for the losing teams. These datasets are great because they contain nearly 100k games and have no NA/Null values. 
+<bleh> 
 
 
 ## Cleaning Data
@@ -36,15 +36,19 @@ colnames(lose_stats_df) <- c('kill1', 'kill2', 'kill3', 'kill4', 'kill5', 'death
 library(dplyr)
 
 win_stats_df <- win_stats_df %>%
-  mutate(won=1)
+  mutate(won="True")
 
 lose_stats_df <- lose_stats_df %>%
-  mutate(won =0)
+  mutate(won ="False")
 
 #full_stats_df <- merge(win_stats_df, lose_stats_df, by = "gameId")
 full_stats_df <- rbind(win_stats_df, lose_stats_df)
 drop <- c("gameId")
 full_stats_df <- full_stats_df[,!(names(full_stats_df) %in% drop)]
+
+# Make our won column a factor for classification
+full_stats_df$won <- as.factor(full_stats_df$won)
+
 str(full_stats_df)
 ```
 ```{r}
@@ -73,13 +77,10 @@ Next let's randomly divide the data into train, test, and validate:
 
 ```{r}
 set.seed(1010)
-#j <- sample(1:nrow(full_stats_smol), 0.75*nrow(full_stats_smol), replace=FALSE)
-#full_stats_df <- full_stats_df[j,]
-spec <-c(train=.6, test=.2, validate=.2)
-i <- sample(cut(1:nrow(lolDataless), nrow(lolDataless)*cumsum(c(0,spec)), labels=names(spec)))
-full_stats_train <- lolDataless[i=="train",]
-full_stats_test <- lolDataless[i=="test",]
-full_stats_validate <- lolDataless[i=="validate",]
+i <- sample(1:nrow(lolDataless), 0.75*nrow(lolDataless), replace=FALSE)
+full_stats_train <- lolDataless[i,]
+full_stats_test <- lolDataless[-i,]
+
 summary(full_stats_train)
 ```
 
@@ -118,8 +119,8 @@ plot(full_stats_train$TotalCrowdControl, full_stats_train$TotalGold, main="total
 Now we will build our logistic regression model
 ```{r}
 library(e1071)
-svm_won <- svm(won~., data=full_stats_train, kernel="linear", cost=10, scale=TRUE)
-summary(svm_won)
+svm_lin <- svm(won~., data=full_stats_train, kernel="linear", cost=10, scale=TRUE)
+summary(svm_lin)
 ```
 
 #### Testing & Evaluation
@@ -128,84 +129,84 @@ Now we can evaluate on the test set:
 
 ```{r}
 library(caret)
-svm_probs <- predict(svm_won, newdata = full_stats_test)
-svm_pred <- ifelse(svm_probs > 0.5, 1, 0)
-svm_acc <- mean(svm_pred == full_stats_test$won)
+svm_probs_lin <- predict(svm_lin, newdata = full_stats_test)
 
-confusionMatrix(as.factor(svm_pred), reference = as.factor(full_stats_test$won))
+confusionMatrix(svm_probs_lin, reference = full_stats_test$won)
+plot(svm_lin, full_stats_test, TotalGold ~ TotalVision)
+plot(svm_lin, full_stats_test, TotalGold ~ TotalDeath)
+plot(svm_lin, full_stats_test, TotalKill ~ TotalDeath)
+plot(svm_lin, full_stats_test, TotalKill ~ TotalVision)
+plot(svm_lin, full_stats_test, TotalKill ~ TotalCrowdControl)
+plot(svm_lin, full_stats_test, TotalKill ~ TotalDamage)
 ```
-## kNN Classification
 
-### Normalization, Training, and Testing
+### Polynomial
+
+#### Training
+
+Now we will build our logistic regression model
+```{r}
+library(e1071)
+svm_poly <- svm(won~., data=full_stats_train, kernel="polynomial", cost=10, scale=TRUE)
+summary(svm_poly)
+```
+
+#### Testing & Evaluation
+
+Now we can evaluate on the test set:
 
 ```{r}
-normalize <- function(x) {
-  return ((x - min(x)) / (max(x) - min(x)))
-}
-full_stats_df_normalized <- as.data.frame(lapply(full_stats_df[, 1:30], normalize))
-head(full_stats_df_normalized)
+library(caret)
+svm_probs_poly <- predict(svm_poly, newdata = full_stats_test)
 
-library(class)
-set.seed(1010)
-ind <- sample(1:nrow(full_stats_df_normalized), size=nrow(full_stats_df_normalized) * .70, replace = FALSE)
-k_train <- full_stats_df[ind,]
-k_test <- full_stats_df[-ind,]
-k_trainLabels <- full_stats_df[ind, 31]
-k_testLabels <- full_stats_df[-ind, 31]
-knn_pred <- knn(train = k_train, test = k_test, cl = k_trainLabels, k = 425) # I choose k = 425 because we have 181000 observations and the sqrt(181000) is 425
+confusionMatrix(svm_probs_poly, reference = full_stats_test$won)
+plot(svm_poly, full_stats_test, TotalGold ~ TotalVision)
+plot(svm_poly, full_stats_test, TotalGold ~ TotalDeath)
+plot(svm_poly, full_stats_test, TotalKill ~ TotalDeath)
+plot(svm_poly, full_stats_test, TotalKill ~ TotalVision)
+plot(svm_poly, full_stats_test, TotalKill ~ TotalCrowdControl)
+plot(svm_poly, full_stats_test, TotalKill ~ TotalDamage)
 ```
 
+### Radial
 
-### Evaluating
+#### Training
+
+Now we will build our logistic regression model
+```{r}
+library(e1071)
+svm_rad <- svm(won~., data=full_stats_train, kernel="radial", cost=10, scale=TRUE)
+summary(svm_rad)
+```
+
+#### Testing & Evaluation
+
+Now we can evaluate on the test set:
 
 ```{r}
+library(caret)
+svm_probs_rad <- predict(svm_rad, newdata = full_stats_test)
 
-confusionMatrix(as.factor(knn_pred), reference = as.factor(k_test$won))
-
+confusionMatrix(svm_probs_rad, reference = full_stats_test$won)
+plot(svm_rad, full_stats_test, TotalGold ~ TotalVision)
+plot(svm_rad, full_stats_test, TotalGold ~ TotalDeath)
+plot(svm_rad, full_stats_test, TotalKill ~ TotalDeath)
+plot(svm_rad, full_stats_test, TotalKill ~ TotalVision)
+plot(svm_rad, full_stats_test, TotalKill ~ TotalCrowdControl)
+plot(svm_rad, full_stats_test, TotalKill ~ TotalDamage)
 ```
 
-## Decision Trees for Classification
-
-### Display the tree
-
-```{r}
-library(tree)
-stats_tree <- tree(won~., data = full_stats_df)
-stats_tree
-summary(stats_tree)
-plot(stats_tree)
-text(stats_tree, cex = .75, pretty = 0)
-```
-
-### Train & Test
-
-```{r}
-set.seed(1010)
-i <- sample(181000, 45250, replace=FALSE)
-tree_train <- full_stats_df[i,]
-tree_test <- full_stats_df[-i,]
-stats_train_tree <- tree(as.factor(won)~., data = tree_train)
-print(stats_train_tree)
-tree_pred <- predict(stats_train_tree, newdata = tree_test, type = "class")
-```
-
-### Evaluation
-
-```{r}
-confusionMatrix(as.factor(tree_pred), reference = as.factor(tree_test$won))
-```
-
-## Logistic Regression vs kNN vs Decision Trees
+## SVM Linear vs Polynomial vs Radial
 Analyzing the results of each model based on the algorithms.
 
-### Logistic Regression
+### SVM Linear
 
-The Logistic Regression model had a high accuracy of about 96%, a Kappa value of about .91, a p-value of 7.574e-05, a sensitivity value of about .96, and a specificity of about .95. These are all very good metrics for a model. I believe the logistic regression model performed so well because it is a linear classifier and the data is very linear. Therefore computing log odds and probabilities linearly for the data was very effective.
+<bleh>
 
-### kNN Classification
+### SVM Polynomial
 
-The kNN Classification model had an accuracy of about 67%, a Kappa value of about .34, a p-value of 2.2e-16, a sensitivity value of about .56, and a specificity value of about .78. These metrics aren't nearly as impressive looking compared to the logistic regression. However, you have to take into consideration how much variance there is in the data and that looking at nearest neighbors might not be as accurate as comparing the stats linearly. For this algorithm I had to normalize the data and use the square root of the size of the data in order to achieve the highest accuracy of 67%, before this it was around 50%. We also have many predictors in this data set where kNN prefers fewer predictors, if I were to limit the predictors/combine some of them it would likely perform better.
+<bleh>
 
-### Decision Trees
+### SVM Radial
 
-The Decision Trees model had an accuracy of about 77%, a Kappa value of about .55, a p-value of 2.2e-16, a sensitivity value of about .75, and a specificity value of about .8. These are some pretty fair metrics overall. The tree itself is actually quite simple if you understand the data and what the predictors mean. It is clear which ones cause splits between likely to win or lose, I think it is fairly accurate because it was easy for the tree to make splits in the linear data based on the many predictors.
+<bleh>
