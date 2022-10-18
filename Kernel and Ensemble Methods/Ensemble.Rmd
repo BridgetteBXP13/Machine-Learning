@@ -36,10 +36,10 @@ colnames(lose_stats_df) <- c('kill1', 'kill2', 'kill3', 'kill4', 'kill5', 'death
 library(dplyr)
 
 win_stats_df <- win_stats_df %>%
-  mutate(won="True")
+  mutate(won=1)
 
 lose_stats_df <- lose_stats_df %>%
-  mutate(won ="False")
+  mutate(won =0)
 
 #full_stats_df <- merge(win_stats_df, lose_stats_df, by = "gameId")
 full_stats_df <- rbind(win_stats_df, lose_stats_df)
@@ -109,22 +109,12 @@ plot(full_stats_train$TotalVision, full_stats_train$TotalGold, main="Vision Scor
 plot(full_stats_train$TotalCrowdControl, full_stats_train$TotalGold, main="totalTimeCrowdControlDealt and Gold Earned", xlab="totalTimeCrowdControlDealt", ylab="Total Gold Earned", col = rep(18:24))
 
 ```
-## Logistic Regression
-
-### Training
-
-Now we will build our logistic regression model
-```{r}
-glm_won <- glm(won~., data=full_stats_train, family = "binomial")
-summary(glm_won)
-```
-
-### Testing & Evaluation
-
-Now we can evaluate on the test set:
-
+### Performing Logistic Regression
 ```{r}
 library(caret)
+glm_won <- glm(won~., data=full_stats_train, family = "binomial")
+summary(glm_won)
+
 glm_probs <- predict(glm_won, newdata = full_stats_test, type = "response")
 glm_pred <- ifelse(glm_probs > 0.5, 1, 0)
 glm_acc <- mean(glm_pred == full_stats_test$won)
@@ -143,7 +133,7 @@ Now we will build our logistic regression model
 library(randomForest)
 set.seed(1010)
 randFor <- randomForest(won~., data=full_stats_train, importance=TRUE)
-#summary(randFor)
+summary(randFor)
 ```
 
 #### Testing & Evaluation
@@ -151,27 +141,21 @@ randFor <- randomForest(won~., data=full_stats_train, importance=TRUE)
 Now we can evaluate on the test set:
 
 ```{r}
-library(caret)
-svm_probs_lin <- predict(svm_lin, newdata = full_stats_test)
-
-confusionMatrix(svm_probs_lin, reference = full_stats_test$won)
-plot(svm_lin, full_stats_test, TotalGold ~ TotalVision)
-plot(svm_lin, full_stats_test, TotalGold ~ TotalDeath)
-plot(svm_lin, full_stats_test, TotalKill ~ TotalDeath)
-plot(svm_lin, full_stats_test, TotalKill ~ TotalVision)
-plot(svm_lin, full_stats_test, TotalKill ~ TotalCrowdControl)
-plot(svm_lin, full_stats_test, TotalKill ~ TotalDamage)
+# I have no idea how to evaluate random forest
 ```
 
-### Polynomial
+### XGBoost
 
 #### Training
 
-Now we will build our logistic regression model
+Now we will build our XGBoost Model
 ```{r}
-library(e1071)
-svm_poly <- svm(won~., data=full_stats_train, kernel="polynomial", cost=10, scale=TRUE)
-summary(svm_poly)
+library(xgboost)
+train_label <- ifelse(full_stats_train$won==1, 1, 0)
+train_matrix <- data.matrix((full_stats_train[, -6]))
+
+xgb_model <- xgboost(data=train_matrix, label=train_label, nrounds=10, objective='binary:logistic')
+
 ```
 
 #### Testing & Evaluation
@@ -179,16 +163,11 @@ summary(svm_poly)
 Now we can evaluate on the test set:
 
 ```{r}
-library(caret)
-svm_probs_poly <- predict(svm_poly, newdata = full_stats_test)
+test_label <- ifelse(full_stats_test$won==1, 1, 0)
+test_matrix <- data.matrix((full_stats_test[, -6]))
 
-confusionMatrix(svm_probs_poly, reference = full_stats_test$won)
-plot(svm_poly, full_stats_test, TotalGold ~ TotalVision)
-plot(svm_poly, full_stats_test, TotalGold ~ TotalDeath)
-plot(svm_poly, full_stats_test, TotalKill ~ TotalDeath)
-plot(svm_poly, full_stats_test, TotalKill ~ TotalVision)
-plot(svm_poly, full_stats_test, TotalKill ~ TotalCrowdControl)
-plot(svm_poly, full_stats_test, TotalKill ~ TotalDamage)
+probs <- predict(xgb_model, test_matrix)
+xgb.plot.multi.trees(model = xgb_model, feature_names = , features_keep = 3)
 ```
 
 ### Radial
@@ -219,7 +198,7 @@ plot(svm_rad, full_stats_test, TotalKill ~ TotalCrowdControl)
 plot(svm_rad, full_stats_test, TotalKill ~ TotalDamage)
 ```
 
-## SVM Linear vs Polynomial vs Radial
+## Random Forest vs XGBoost vs fastAdaBoost
 Analyzing the results of each model based on the algorithms.
 
 ### Random Forest
@@ -227,7 +206,7 @@ Analyzing the results of each model based on the algorithms.
 adf
 
 
-### XSGBoost
+### XGBoost
 
 asdf
 
