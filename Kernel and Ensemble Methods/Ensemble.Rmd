@@ -1,0 +1,222 @@
+---
+title: "Kernel and Ensemble Methods: Classification"
+author: "Isabelle Kirby, Bridgette Bryant"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Ensemble Packaging Methods for Korea's top high elo teams in League of Legends
+
+I utilized Random Forest, XGBoost, and fastAdaBoost to classify the League of Legends team won or lost based on the total team stats for kills, deaths, gold, and vision scores. Our dataset has all these values in two datasets lose_team_stats.csv and win_team_stats.csv. Each game also has a gameId which is unique to that specific game. This ID is identical in each dataset. The win_team_stats.csv file contains the winning teams kills, deaths, gold earned, damage dealt, crowd control, and vision scores for each player. The lose_team_stats is the same but for the losing teams. These datasets are great because they contain nearly 100k games and have no NA/Null values.
+
+
+## Cleaning Data
+
+First we have to unzip the archive (they are large data sets nearly 100k games). Then we will save the
+
+
+```{r}
+
+win_stats_df <- read.csv((unz("League_Data/league_korea_high_elo_team_stats.zip", "win_team_stats.csv")))
+lose_stats_df <- read.csv((unz("League_Data/league_korea_high_elo_team_stats.zip", "lose_team_stats.csv")))
+
+str(win_stats_df)
+str(lose_stats_df)
+
+```
+
+Now we will merge the two data sets together based on their matching gameId column. This way our model can catagorize our data by team 0 or team 1 winning based on both teams contrasting stats.
+```{r}
+# Replacing column names for rbind
+colnames(win_stats_df) <- c('kill1', 'kill2', 'kill3', 'kill4', 'kill5', 'death1', 'death2', 'death3', 'death4', 'death5', 'totalDamageDealtToChampions1', 'totalDamageDealtToChampions2', 'totalDamageDealtToChampions3', 'totalDamageDealtToChampions4', 'totalDamageDealtToChampions5', 'goldEarned1', 'goldEarned2', 'goldEarned3', 'goldEarned4', 'goldEarned5', 'visionScore1', 'visionScore2', 'visionScore3', 'visionScore4', 'visionScore5', 'totalTimeCrowdControlDealt1', 'totalTimeCrowdControlDealt2', 'totalTimeCrowdControlDealt3', 'totalTimeCrowdControlDealt4', 'totalTimeCrowdControlDealt5', 'gameId')
+colnames(lose_stats_df) <- c('kill1', 'kill2', 'kill3', 'kill4', 'kill5', 'death1', 'death2', 'death3', 'death4', 'death5', 'totalDamageDealtToChampions1', 'totalDamageDealtToChampions2', 'totalDamageDealtToChampions3', 'totalDamageDealtToChampions4', 'totalDamageDealtToChampions5', 'goldEarned1', 'goldEarned2', 'goldEarned3', 'goldEarned4', 'goldEarned5', 'visionScore1', 'visionScore2', 'visionScore3', 'visionScore4', 'visionScore5', 'totalTimeCrowdControlDealt1', 'totalTimeCrowdControlDealt2', 'totalTimeCrowdControlDealt3', 'totalTimeCrowdControlDealt4', 'totalTimeCrowdControlDealt5', 'gameId')
+
+# Adding column based on dataset it is in
+library(dplyr)
+
+win_stats_df <- win_stats_df %>%
+  mutate(won=1)
+
+lose_stats_df <- lose_stats_df %>%
+  mutate(won =0)
+
+#full_stats_df <- merge(win_stats_df, lose_stats_df, by = "gameId")
+full_stats_df <- rbind(win_stats_df, lose_stats_df)
+drop <- c("gameId")
+full_stats_df <- full_stats_df[,!(names(full_stats_df) %in% drop)]
+
+# Make our won column a factor for classification
+full_stats_df$won <- as.factor(full_stats_df$won)
+
+str(full_stats_df)
+```
+```{r}
+i <- sample(1:nrow(full_stats_df), .2*nrow(full_stats_df), replace=FALSE)
+full_stats_smol <- full_stats_df[i,]
+
+lolDataless <- full_stats_smol %>% rowwise() %>% mutate(TotalKill = sum(c_across(kill1:kill5)))
+
+lolDataless <- lolDataless %>% rowwise() %>% mutate(TotalDeath = sum(c_across(death1:death5)))
+
+lolDataless <- lolDataless %>% rowwise() %>% mutate(TotalDamage = sum(c_across(totalDamageDealtToChampions1:totalDamageDealtToChampions5)))
+
+lolDataless <- lolDataless %>% rowwise() %>% mutate(TotalGold = sum(c_across(goldEarned1:goldEarned5)))
+
+lolDataless <- lolDataless %>% rowwise() %>% mutate(TotalVision = sum(c_across(visionScore1:visionScore5)))
+
+lolDataless <- lolDataless %>% rowwise() %>% mutate(TotalCrowdControl = sum(c_across(totalTimeCrowdControlDealt1:totalTimeCrowdControlDealt5)))
+
+drop <- c('kill1', 'kill2', 'kill3', 'kill4', 'kill5', 'death1', 'death2', 'death3', 'death4', 'death5', 'totalDamageDealtToChampions1', 'totalDamageDealtToChampions2', 'totalDamageDealtToChampions3', 'totalDamageDealtToChampions4', 'totalDamageDealtToChampions5', 'goldEarned1', 'goldEarned2', 'goldEarned3', 'goldEarned4', 'goldEarned5', 'visionScore1', 'visionScore2', 'visionScore3', 'visionScore4', 'visionScore5', 'totalTimeCrowdControlDealt1', 'totalTimeCrowdControlDealt2', 'totalTimeCrowdControlDealt3', 'totalTimeCrowdControlDealt4', 'totalTimeCrowdControlDealt5')
+
+lolDataless = lolDataless[, !(names(lolDataless) %in% drop)]
+summary(lolDataless)
+```
+
+Next let's randomly divide the data into train, test, and validate:
+
+```{r}
+set.seed(1010)
+i <- sample(1:nrow(lolDataless), 0.75*nrow(lolDataless), replace=FALSE)
+full_stats_train <- lolDataless[i,]
+full_stats_test <- lolDataless[-i,]
+
+summary(full_stats_train)
+```
+
+
+## Data Exploration
+
+Next we will plot some of our data to see possible differences/correlations. Time to do some data exploration.
+
+```{r}
+boxplot(full_stats_train$won, full_stats_train$TotalDeath, main="Won and Deaths", xlab="Won", ylab="Total Deaths", outline = FALSE, col = 'aquamarine')
+
+boxplot(full_stats_train$won, full_stats_train$TotalKill, main="Won and kills", xlab="Won", ylab="Total kills", outline = FALSE, col = 'azure')
+
+boxplot(full_stats_train$won, full_stats_train$TotalGold, main="Won and Gold Earned", xlab="Won", ylab="Total Gold Earned", outline = FALSE, col = 'beige')
+
+boxplot(full_stats_train$won, full_stats_train$TotalVision, main="Won and Vision Score", xlab="Won", ylab="Total Vision Score", outline = FALSE, col = 'bisque')
+
+boxplot(full_stats_train$won, full_stats_train$TotalCrowdControl, main="Won and totalTimeCrowdControlDealt", xlab="Won", ylab="Total totalTimeCrowdControlDealt", outline = FALSE, col='red')
+
+plot(full_stats_train$TotalKill, full_stats_train$TotalGold, main="Kills and Gold Earned", xlab="Kills", ylab="Total Gold Earned", col = rep(1:6))
+
+plot(full_stats_train$TotalDeath, full_stats_train$TotalDeath, main="Deaths and Gold Earned", xlab="Deaths", ylab="Total Gold Earned", col = rep(6:12))
+
+plot(full_stats_train$TotalVision, full_stats_train$TotalGold, main="Vision Score and Gold Earned", xlab="Vision Score", ylab="Total Gold Earned", col = rep(12:18))
+
+plot(full_stats_train$TotalCrowdControl, full_stats_train$TotalGold, main="totalTimeCrowdControlDealt and Gold Earned", xlab="totalTimeCrowdControlDealt", ylab="Total Gold Earned", col = rep(18:24))
+
+```
+### Performing Logistic Regression
+```{r}
+library(caret)
+glm_won <- glm(won~., data=full_stats_train, family = "binomial")
+summary(glm_won)
+
+glm_probs <- predict(glm_won, newdata = full_stats_test, type = "response")
+glm_pred <- ifelse(glm_probs > 0.5, 1, 0)
+glm_acc <- mean(glm_pred == full_stats_test$won)
+
+confusionMatrix(as.factor(glm_pred), reference = as.factor(full_stats_test$won))
+```
+
+## Ensemble Packages
+
+### Random Forest
+
+#### Training
+
+Now we will build our logistic regression model
+```{r}
+library(randomForest)
+set.seed(1010)
+randFor <- randomForest(won~., data=full_stats_train, importance=TRUE)
+summary(randFor)
+```
+
+#### Testing & Evaluation
+
+Now we can evaluate on the test set:
+
+```{r}
+# I have no idea how to evaluate random forest
+```
+
+### XGBoost
+
+#### Training
+
+Now we will build our XGBoost Model
+```{r}
+library(xgboost)
+train_label <- ifelse(full_stats_train$won==1, 1, 0)
+train_matrix <- data.matrix((full_stats_train[, -6]))
+
+xgb_model <- xgboost(data=train_matrix, label=train_label, nrounds=10, objective='binary:logistic')
+
+```
+
+#### Testing & Evaluation
+
+Now we can evaluate on the test set:
+
+```{r}
+test_label <- ifelse(full_stats_test$won==1, 1, 0)
+test_matrix <- data.matrix((full_stats_test[, -6]))
+
+probs <- predict(xgb_model, test_matrix)
+xgb.plot.multi.trees(model = xgb_model, feature_names = , features_keep = 3)
+```
+
+### Radial
+
+#### Training
+
+Now we will build our logistic regression model
+```{r}
+library(e1071)
+svm_rad <- svm(won~., data=full_stats_train, kernel="radial", cost=10, scale=TRUE)
+summary(svm_rad)
+```
+
+#### Testing & Evaluation
+
+Now we can evaluate on the test set:
+
+```{r}
+library(caret)
+svm_probs_rad <- predict(svm_rad, newdata = full_stats_test)
+
+confusionMatrix(svm_probs_rad, reference = full_stats_test$won)
+plot(svm_rad, full_stats_test, TotalGold ~ TotalVision)
+plot(svm_rad, full_stats_test, TotalGold ~ TotalDeath)
+plot(svm_rad, full_stats_test, TotalKill ~ TotalDeath)
+plot(svm_rad, full_stats_test, TotalKill ~ TotalVision)
+plot(svm_rad, full_stats_test, TotalKill ~ TotalCrowdControl)
+plot(svm_rad, full_stats_test, TotalKill ~ TotalDamage)
+```
+
+## Random Forest vs XGBoost vs fastAdaBoost
+Analyzing the results of each model based on the algorithms.
+
+### Random Forest
+
+adf
+
+
+### XGBoost
+
+asdf
+
+
+### fastAdaBoost
+
+asdf
+
+
+### Summary
+
+asdf
+
