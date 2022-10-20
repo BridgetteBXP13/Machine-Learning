@@ -141,7 +141,8 @@ summary(randFor)
 Now we can evaluate on the test set:
 
 ```{r}
-# I have no idea how to evaluate random forest
+forestPred <- predict(randFor, newdata=full_stats_train$won[-6])
+table(full_stats_train$won[,6], forestPred)
 ```
 
 ### XGBoost

@@ -313,20 +313,20 @@ team 1 winning based on both teams contrasting stats.
 \end{Shaded}
 
 \begin{verbatim}
-##       won          TotalKill       TotalDeath     TotalDamage    
-##  Min.   :0.000   Min.   : 0.00   Min.   : 0.00   Min.   :   181  
-##  1st Qu.:0.000   1st Qu.:14.00   1st Qu.:14.00   1st Qu.: 39180  
-##  Median :1.000   Median :22.00   Median :22.00   Median : 61364  
-##  Mean   :0.505   Mean   :22.55   Mean   :22.47   Mean   : 64909  
-##  3rd Qu.:1.000   3rd Qu.:30.00   3rd Qu.:30.00   3rd Qu.: 85747  
-##  Max.   :1.000   Max.   :85.00   Max.   :80.00   Max.   :232574  
-##    TotalGold       TotalVision    TotalCrowdControl
-##  Min.   :  3405   Min.   :  0.0   Min.   :   0     
-##  1st Qu.: 35157   1st Qu.: 81.0   1st Qu.: 567     
-##  Median : 46496   Median :126.0   Median : 796     
-##  Mean   : 46285   Mean   :129.5   Mean   : 850     
-##  3rd Qu.: 57396   3rd Qu.:171.0   3rd Qu.:1074     
-##  Max.   :104745   Max.   :454.0   Max.   :4133
+##       won           TotalKill       TotalDeath     TotalDamage    
+##  Min.   :0.0000   Min.   : 0.00   Min.   : 0.00   Min.   :     0  
+##  1st Qu.:0.0000   1st Qu.:14.00   1st Qu.:14.00   1st Qu.: 38821  
+##  Median :0.0000   Median :22.00   Median :22.00   Median : 60628  
+##  Mean   :0.4938   Mean   :22.34   Mean   :22.57   Mean   : 64499  
+##  3rd Qu.:1.0000   3rd Qu.:30.00   3rd Qu.:30.00   3rd Qu.: 85667  
+##  Max.   :1.0000   Max.   :85.00   Max.   :84.00   Max.   :240522  
+##    TotalGold       TotalVision  TotalCrowdControl
+##  Min.   :  3532   Min.   :  0   Min.   :   0.0   
+##  1st Qu.: 34983   1st Qu.: 81   1st Qu.: 569.0   
+##  Median : 46384   Median :126   Median : 795.0   
+##  Mean   : 46156   Mean   :129   Mean   : 849.7   
+##  3rd Qu.: 57303   3rd Qu.:171   3rd Qu.:1071.0   
+##  Max.   :112722   Max.   :431   Max.   :4348.0
 \end{verbatim}
 
 Next let's randomly divide the data into train, test, and validate:
@@ -347,19 +347,19 @@ Next let's randomly divide the data into train, test, and validate:
 
 \begin{verbatim}
 ##       won           TotalKill       TotalDeath     TotalDamage    
-##  Min.   :0.0000   Min.   : 0.00   Min.   : 0.00   Min.   :   181  
-##  1st Qu.:0.0000   1st Qu.:14.00   1st Qu.:14.00   1st Qu.: 39197  
-##  Median :1.0000   Median :22.00   Median :22.00   Median : 61769  
-##  Mean   :0.5054   Mean   :22.55   Mean   :22.48   Mean   : 65010  
-##  3rd Qu.:1.0000   3rd Qu.:30.00   3rd Qu.:30.00   3rd Qu.: 85727  
-##  Max.   :1.0000   Max.   :84.00   Max.   :80.00   Max.   :232574  
-##    TotalGold       TotalVision    TotalCrowdControl
-##  Min.   :  3405   Min.   :  0.0   Min.   :   0.0   
-##  1st Qu.: 35189   1st Qu.: 81.0   1st Qu.: 569.0   
-##  Median : 46520   Median :126.0   Median : 801.0   
-##  Mean   : 46292   Mean   :129.6   Mean   : 852.2   
-##  3rd Qu.: 57482   3rd Qu.:171.0   3rd Qu.:1077.0   
-##  Max.   :101763   Max.   :442.0   Max.   :4133.0
+##  Min.   :0.0000   Min.   : 0.00   Min.   : 0.00   Min.   :    22  
+##  1st Qu.:0.0000   1st Qu.:14.00   1st Qu.:14.00   1st Qu.: 38773  
+##  Median :0.0000   Median :22.00   Median :22.00   Median : 60799  
+##  Mean   :0.4907   Mean   :22.31   Mean   :22.64   Mean   : 64588  
+##  3rd Qu.:1.0000   3rd Qu.:30.00   3rd Qu.:30.00   3rd Qu.: 85757  
+##  Max.   :1.0000   Max.   :85.00   Max.   :75.00   Max.   :240522  
+##    TotalGold       TotalVision  TotalCrowdControl
+##  Min.   :  3532   Min.   :  0   Min.   :   1.0   
+##  1st Qu.: 35088   1st Qu.: 81   1st Qu.: 569.0   
+##  Median : 46418   Median :125   Median : 803.0   
+##  Mean   : 46210   Mean   :129   Mean   : 852.8   
+##  3rd Qu.: 57343   3rd Qu.:171   3rd Qu.:1073.0   
+##  Max.   :108542   Max.   :431   Max.   :4348.0
 \end{verbatim}
 
 \hypertarget{data-exploration}{%
@@ -447,7 +447,7 @@ differences/correlations. Time to do some data exploration.
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 22.54954
+## [1] 22.31225
 \end{verbatim}
 
 \begin{Shaded}
@@ -457,7 +457,7 @@ differences/correlations. Time to do some data exploration.
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 22.50663
+## [1] 22.39558
 \end{verbatim}
 
 \begin{Shaded}
@@ -467,7 +467,7 @@ differences/correlations. Time to do some data exploration.
 \end{Shaded}
 
 \begin{verbatim}
-## [1] 22.59448
+## [1] 22.36878
 \end{verbatim}
 
 \hypertarget{svm-regression}{%
@@ -495,23 +495,23 @@ Trying linear regression with the data set
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -1.29002 -0.15936  0.00309  0.15623  1.70042 
+## -1.98516 -0.16120  0.00158  0.16205  1.46055 
 ## 
 ## Coefficients:
 ##                     Estimate Std. Error  t value Pr(>|t|)    
-## (Intercept)        2.835e-01  1.156e-02   24.519  < 2e-16 ***
-## TotalKill          2.174e-02  5.234e-04   41.541  < 2e-16 ***
-## TotalDeath        -3.333e-02  2.984e-04 -111.683  < 2e-16 ***
-## TotalDamage       -1.295e-06  2.421e-07   -5.351 8.93e-08 ***
-## TotalGold          1.808e-05  6.957e-07   25.989  < 2e-16 ***
-## TotalVision       -1.797e-03  1.020e-04  -17.622  < 2e-16 ***
-## TotalCrowdControl -4.566e-05  8.371e-06   -5.455 5.01e-08 ***
+## (Intercept)        3.145e-01  1.172e-02   26.823  < 2e-16 ***
+## TotalKill          2.156e-02  5.155e-04   41.831  < 2e-16 ***
+## TotalDeath        -3.432e-02  3.012e-04 -113.951  < 2e-16 ***
+## TotalDamage       -2.679e-08  2.480e-07   -0.108    0.914    
+## TotalGold          1.637e-05  6.987e-07   23.434  < 2e-16 ***
+## TotalVision       -1.893e-03  1.028e-04  -18.414  < 2e-16 ***
+## TotalCrowdControl -4.484e-05  8.541e-06   -5.250 1.55e-07 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.2533 on 10853 degrees of freedom
-## Multiple R-squared:  0.7435, Adjusted R-squared:  0.7433 
-## F-statistic:  5243 on 6 and 10853 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.2525 on 10853 degrees of freedom
+## Multiple R-squared:  0.745,  Adjusted R-squared:  0.7449 
+## F-statistic:  5285 on 6 and 10853 DF,  p-value: < 2.2e-16
 \end{verbatim}
 
 \hypertarget{training}{%
@@ -542,7 +542,7 @@ Now we will build our SVM Linear model
 ##     epsilon:  0.1 
 ## 
 ## 
-## Number of Support Vectors:  9022
+## Number of Support Vectors:  9032
 \end{verbatim}
 
 \hypertarget{testing-evaluation}{%
@@ -579,28 +579,28 @@ Now we can evaluate on the test set:
 ## 
 ##           Reference
 ## Prediction    0    1
-##          0 1720   71
-##          1   75 1754
-##                                           
-##                Accuracy : 0.9597          
-##                  95% CI : (0.9527, 0.9658)
-##     No Information Rate : 0.5041          
-##     P-Value [Acc > NIR] : <2e-16          
-##                                           
-##                   Kappa : 0.9193          
-##                                           
-##  Mcnemar's Test P-Value : 0.8039          
-##                                           
-##             Sensitivity : 0.9582          
-##             Specificity : 0.9611          
-##          Pos Pred Value : 0.9604          
-##          Neg Pred Value : 0.9590          
-##              Prevalence : 0.4959          
-##          Detection Rate : 0.4751          
-##    Detection Prevalence : 0.4948          
-##       Balanced Accuracy : 0.9597          
-##                                           
-##        'Positive' Class : 0               
+##          0 1716   77
+##          1   84 1743
+##                                          
+##                Accuracy : 0.9555         
+##                  95% CI : (0.9483, 0.962)
+##     No Information Rate : 0.5028         
+##     P-Value [Acc > NIR] : <2e-16         
+##                                          
+##                   Kappa : 0.911          
+##                                          
+##  Mcnemar's Test P-Value : 0.6363         
+##                                          
+##             Sensitivity : 0.9533         
+##             Specificity : 0.9577         
+##          Pos Pred Value : 0.9571         
+##          Neg Pred Value : 0.9540         
+##              Prevalence : 0.4972         
+##          Detection Rate : 0.4740         
+##    Detection Prevalence : 0.4953         
+##       Balanced Accuracy : 0.9555         
+##                                          
+##        'Positive' Class : 0              
 ## 
 \end{verbatim}
 
@@ -628,17 +628,17 @@ Now we can evaluate on the test set:
 ##  cost
 ##  0.01
 ## 
-## - best performance: 0.06686526 
+## - best performance: 0.06678562 
 ## 
 ## - Detailed performance results:
 ##    cost      error  dispersion
-## 1 1e-03 0.07205437 0.004359118
-## 2 1e-02 0.06686526 0.004934802
-## 3 1e-01 0.06704217 0.005290077
-## 4 1e+00 0.06710684 0.005355261
-## 5 5e+00 0.06711377 0.005361128
-## 6 1e+01 0.06712158 0.005358160
-## 7 1e+02 0.06711356 0.005363320
+## 1 1e-03 0.07168615 0.005033049
+## 2 1e-02 0.06678562 0.005345611
+## 3 1e-01 0.06715216 0.005518754
+## 4 1e+00 0.06724929 0.005546265
+## 5 5e+00 0.06725734 0.005542432
+## 6 1e+01 0.06725873 0.005541048
+## 7 1e+02 0.06726582 0.005540549
 \end{verbatim}
 
 \hypertarget{polynomial-kernel}{%
@@ -668,7 +668,7 @@ Now we can evaluate on the test set:
 ##     epsilon:  0.1 
 ## 
 ## 
-## Number of Support Vectors:  10064
+## Number of Support Vectors:  10059
 \end{verbatim}
 
 \hypertarget{testing-evaluation-1}{%
@@ -692,26 +692,26 @@ Now we can evaluate on the test set:
 ## 
 ##           Reference
 ## Prediction    0    1
-##          0 1612   61
-##          1  183 1764
+##          0 1716   87
+##          1   84 1733
 ##                                           
-##                Accuracy : 0.9326          
-##                  95% CI : (0.9239, 0.9406)
-##     No Information Rate : 0.5041          
-##     P-Value [Acc > NIR] : < 2.2e-16       
+##                Accuracy : 0.9528          
+##                  95% CI : (0.9453, 0.9594)
+##     No Information Rate : 0.5028          
+##     P-Value [Acc > NIR] : <2e-16          
 ##                                           
-##                   Kappa : 0.8651          
+##                   Kappa : 0.9055          
 ##                                           
-##  Mcnemar's Test P-Value : 9.466e-15       
+##  Mcnemar's Test P-Value : 0.8784          
 ##                                           
-##             Sensitivity : 0.8981          
-##             Specificity : 0.9666          
-##          Pos Pred Value : 0.9635          
-##          Neg Pred Value : 0.9060          
-##              Prevalence : 0.4959          
-##          Detection Rate : 0.4453          
-##    Detection Prevalence : 0.4622          
-##       Balanced Accuracy : 0.9323          
+##             Sensitivity : 0.9533          
+##             Specificity : 0.9522          
+##          Pos Pred Value : 0.9517          
+##          Neg Pred Value : 0.9538          
+##              Prevalence : 0.4972          
+##          Detection Rate : 0.4740          
+##    Detection Prevalence : 0.4981          
+##       Balanced Accuracy : 0.9528          
 ##                                           
 ##        'Positive' Class : 0               
 ## 
@@ -742,7 +742,7 @@ Now we can evaluate on the test set:
 ##     epsilon:  0.1 
 ## 
 ## 
-## Number of Support Vectors:  4892
+## Number of Support Vectors:  4860
 \end{verbatim}
 
 \hypertarget{testing-evaluation-2}{%
@@ -766,26 +766,26 @@ Now we can evaluate on the test set:
 ## 
 ##           Reference
 ## Prediction    0    1
-##          0 1612   61
-##          1  183 1764
+##          0 1716   87
+##          1   84 1733
 ##                                           
-##                Accuracy : 0.9326          
-##                  95% CI : (0.9239, 0.9406)
-##     No Information Rate : 0.5041          
-##     P-Value [Acc > NIR] : < 2.2e-16       
+##                Accuracy : 0.9528          
+##                  95% CI : (0.9453, 0.9594)
+##     No Information Rate : 0.5028          
+##     P-Value [Acc > NIR] : <2e-16          
 ##                                           
-##                   Kappa : 0.8651          
+##                   Kappa : 0.9055          
 ##                                           
-##  Mcnemar's Test P-Value : 9.466e-15       
+##  Mcnemar's Test P-Value : 0.8784          
 ##                                           
-##             Sensitivity : 0.8981          
-##             Specificity : 0.9666          
-##          Pos Pred Value : 0.9635          
-##          Neg Pred Value : 0.9060          
-##              Prevalence : 0.4959          
-##          Detection Rate : 0.4453          
-##    Detection Prevalence : 0.4622          
-##       Balanced Accuracy : 0.9323          
+##             Sensitivity : 0.9533          
+##             Specificity : 0.9522          
+##          Pos Pred Value : 0.9517          
+##          Neg Pred Value : 0.9538          
+##              Prevalence : 0.4972          
+##          Detection Rate : 0.4740          
+##    Detection Prevalence : 0.4981          
+##       Balanced Accuracy : 0.9528          
 ##                                           
 ##        'Positive' Class : 0               
 ## 
@@ -813,35 +813,35 @@ Now we can evaluate on the test set:
 ##  cost gamma
 ##     1   0.5
 ## 
-## - best performance: 0.04109985 
+## - best performance: 0.04273152 
 ## 
 ## - Detailed performance results:
 ##     cost gamma      error  dispersion
-## 1  1e-01   0.5 0.04517985 0.004063444
-## 2  1e+00   0.5 0.04109985 0.004355319
-## 3  1e+01   0.5 0.04470871 0.006635738
-## 4  1e+02   0.5 0.06272976 0.005734730
-## 5  1e+03   0.5 0.12580670 0.015560496
-## 6  1e-01   1.0 0.04719456 0.004486805
-## 7  1e+00   1.0 0.04199222 0.004775072
-## 8  1e+01   1.0 0.04888901 0.005695395
-## 9  1e+02   1.0 0.07422813 0.008820612
-## 10 1e+03   1.0 0.13452328 0.019841029
-## 11 1e-01   2.0 0.05689078 0.004512555
-## 12 1e+00   2.0 0.04597008 0.004935607
-## 13 1e+01   2.0 0.05648573 0.006758404
-## 14 1e+02   2.0 0.06614469 0.008202336
-## 15 1e+03   2.0 0.06996724 0.009252798
-## 16 1e-01   3.0 0.07007584 0.004412023
-## 17 1e+00   3.0 0.05182832 0.004280898
-## 18 1e+01   3.0 0.05932529 0.005618123
-## 19 1e+02   3.0 0.06221438 0.008302670
-## 20 1e+03   3.0 0.06502546 0.009498958
-## 21 1e-01   4.0 0.08476798 0.004509536
-## 22 1e+00   4.0 0.05838182 0.003854927
-## 23 1e+01   4.0 0.06315717 0.005247175
-## 24 1e+02   4.0 0.06446306 0.007719418
-## 25 1e+03   4.0 0.06821116 0.010148265
+## 1  1e-01   0.5 0.04416790 0.008641673
+## 2  1e+00   0.5 0.04273152 0.010216960
+## 3  1e+01   0.5 0.04870709 0.009852544
+## 4  1e+02   0.5 0.07018411 0.013378468
+## 5  1e+03   0.5 0.13443356 0.029863017
+## 6  1e-01   1.0 0.04624865 0.008590960
+## 7  1e+00   1.0 0.04467888 0.010164848
+## 8  1e+01   1.0 0.05433545 0.011575472
+## 9  1e+02   1.0 0.07921649 0.014958568
+## 10 1e+03   1.0 0.14827955 0.033463579
+## 11 1e-01   2.0 0.05549339 0.008530499
+## 12 1e+00   2.0 0.04989073 0.010297126
+## 13 1e+01   2.0 0.05949935 0.011672813
+## 14 1e+02   2.0 0.07360286 0.016671537
+## 15 1e+03   2.0 0.07945069 0.018577348
+## 16 1e-01   3.0 0.06895651 0.008559338
+## 17 1e+00   3.0 0.05515571 0.010185814
+## 18 1e+01   3.0 0.06175970 0.010730992
+## 19 1e+02   3.0 0.06753762 0.014427356
+## 20 1e+03   3.0 0.07498614 0.025682307
+## 21 1e-01   4.0 0.08462501 0.008557877
+## 22 1e+00   4.0 0.06125717 0.009981956
+## 23 1e+01   4.0 0.06520215 0.010089338
+## 24 1e+02   4.0 0.06963193 0.014457814
+## 25 1e+03   4.0 0.07758159 0.029233255
 \end{verbatim}
 
 \begin{Shaded}
@@ -866,7 +866,7 @@ Now we can evaluate on the test set:
 ##     epsilon:  0.1 
 ## 
 ## 
-## Number of Support Vectors:  1707
+## Number of Support Vectors:  1759
 \end{verbatim}
 
 \begin{Shaded}
