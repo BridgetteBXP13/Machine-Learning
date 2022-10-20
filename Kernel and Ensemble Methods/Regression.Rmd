@@ -48,7 +48,7 @@ full_stats_df <- full_stats_df[,!(names(full_stats_df) %in% drop)]
 str(full_stats_df)
 ```
 ```{r}
-i <- sample(1:nrow(full_stats_df), .2*nrow(full_stats_df), replace=FALSE)
+i <- sample(1:nrow(full_stats_df), .1*nrow(full_stats_df), replace=FALSE)
 full_stats_smol <- full_stats_df[i,]
 
 lolDataless <- full_stats_smol %>% rowwise() %>% mutate(TotalKill = sum(c_across(kill1:kill5)))
@@ -134,6 +134,19 @@ library(e1071)
 svm_won <- svm(won~., data=full_stats_train, kernel="linear", cost=10, scale=TRUE)
 summary(svm_won)
 ```
+#### Testing & Evaluation
+
+Now we can evaluate on the test set:
+
+```{r}
+library(caret)
+svm_probs <- predict(svm_won, newdata = full_stats_test)
+svm_pred <- ifelse(svm_probs > 0.5, 1, 0)
+svm_acc <- mean(svm_pred == full_stats_test$won)
+
+confusionMatrix(as.factor(svm_pred), reference = as.factor(full_stats_test$won))
+```
+
 #### Tuning
 
 ```{r}
@@ -145,22 +158,23 @@ tuneLin <- tune(svm, won~., data=full_stats_validate, kernel="linear", ranges=li
 summary(tuneLin)
 ```
 
-#### Evaluating after Tune
-
-```{r}
-predLinSvmTune <- predict(tuneLin$best.model, newdata=full_stats_test)
-corLinSvmTune <- cor(predLinSvmTune, full_stats_test$won)
-mseLinSvmTune <- mean((predLinSvmTune - full_stats_test$won)^2)
-```
-
 #### Polynomial Kernel
 
 ```{r}
 svm_poly <- svm(won~., data=full_stats_train, kernel="polynomial", cost=10, scale=TRUE)
 summary(svm_poly)
+```
+#### Testing & Evaluation
+
+Now we can evaluate on the test set:
+
+```{r}
 predPolySvm <- predict(svm_poly, newdata=full_stats_test)
 corPolySvm <- cor(predPolySvm, full_stats_test$won)
+svm_poly <- ifelse(predPolySvm > 0.5, 1, 0)
 msePolySvm <- mean((predPolySvm - full_stats_test$won)^2)
+
+confusionMatrix(as.factor(svm_poly), reference = as.factor(full_stats_test$won))
 ```
 
 #### Radial Kernel
@@ -168,11 +182,20 @@ msePolySvm <- mean((predPolySvm - full_stats_test$won)^2)
 ```{r}
 svm_rad <- svm(won~., data=full_stats_train, kernel="radial", cost=10, scale=TRUE)
 summary(svm_rad)
+
+```
+#### Testing & Evaluation
+
+Now we can evaluate on the test set:
+
+```{r}
 predRadSvm <- predict(svm_rad, newdata=full_stats_test)
 corRadSvm <- cor(predRadSvm, full_stats_test$won)
 mseRadSvm <- mean((predRadSvm - full_stats_test$won)^2)
-```
+svm_rad <- ifelse(predRadSvm > 0.5, 1, 0)
 
+confusionMatrix(as.factor(svm_poly), reference = as.factor(full_stats_test$won))
+```
 
 #### Tune Hyperparameters
 
@@ -190,33 +213,24 @@ mseRadSvm1 <- mean((predRadSvm1 - full_stats_test$won)^2)
 ```
 
 
-#### Testing & Evaluation
 
-Now we can evaluate on the test set:
-
-```{r}
-library(caret)
-svm_probs <- predict(svm_won, newdata = full_stats_test)
-svm_pred <- ifelse(svm_probs > 0.5, 1, 0)
-svm_acc <- mean(svm_pred == full_stats_test$won)
-
-confusionMatrix(as.factor(svm_pred), reference = as.factor(full_stats_test$won))
-```
 
 ## SVM Linear vs Polynomial vs Radial Kernels
 Analyzing the results of each model based on the algorithms.
 
 ### SVM Linear
 
-<explain/compare>
+For this we are trying to predict whether or not a team has won a match using the stats they had at the end of a game. Linear SVM works by plotting the data in a high-dimensional feature space so that the points can be categorized. The data is then transformed in ways that allows a separator to be drawn as a hyper plane. Linear kernels are better for when the data can be linearly separated easily.
 
+For this data set there was little difference between the accuracies in the different kernel types, which may mean this data was easy to split regardless of the kernel type. The linear kernel did perform marginally better than the others.
 
 ### SVM Polynomial
 
-<explain/compare>
+Polynomial kernels behave similarly to the linear kernels. However, they put all the data in a feature space over polynomials of the original variables, meaning that they work better for data that isn't easily separated linearly.
 
-
+This performed slightly worse than linear kernel, meaning this dataset was easily split using a linear hyperplane. However, it was still very accurate.
 ### SVM Radial Kernels
 
-<explain/compare>
+Radial kernels are similar to polynomial kernels as they both work with data that cannot be linearly separated easily. This generates a non-linear decision boundary.
 
+This performed slightly worse than linear kernel, meaning this dataset was easily split using a linear hyperplane. However, it was still very accurate.
