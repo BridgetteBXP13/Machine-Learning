@@ -271,11 +271,11 @@ xgb.plot.multi.trees(model = xgb_cmb_model, feature_names = colnames(train_matri
 #### Training
 Here we will create our AdaBag model.
 ```{r}
-library(adabag)
+library(fastAdaboost)
 set.seed(1010)
-i <- sample(1:nrow(full_stats_train), .001*nrow(full_stats_train), replace=FALSE)
-smaller_train <- full_stats_train[i,]
-adab_model <- boosting(won~., data=smaller_train, boos=TRUE, mfinal=3, coeflearn='Breiman')
+#i <- sample(1:nrow(full_stats_train), .1*nrow(full_stats_train), replace=FALSE)
+#smaller_train <- full_stats_train[i,]
+adab_model <- boosting(won~., full_stats_train, 10)
 summary(adab_model)
 ```
 
