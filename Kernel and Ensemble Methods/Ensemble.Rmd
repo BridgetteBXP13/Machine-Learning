@@ -8,7 +8,7 @@ output:
 
 # Ensemble Packaging Methods for Korea's top high elo teams in League of Legends
 
-I utilized Random Forest, XGBoost, and AdaBag to classify the League of Legends team won or lost based on the total team stats for kills, deaths, gold, and vision scores. Our dataset has all these values in two datasets lose_team_stats.csv and win_team_stats.csv. Each game also has a gameId which is unique to that specific game. This ID is identical in each dataset. The win_team_stats.csv file contains the winning teams kills, deaths, gold earned, damage dealt, crowd control, and vision scores for each player. The lose_team_stats is the same but for the losing teams. These datasets are great because they contain nearly 100k games and have no NA/Null values.
+I utilized Random Forest, XGBoost, and SuperLearner to classify the League of Legends team won or lost based on the total team stats for kills, deaths, gold, and vision scores. Our dataset has all these values in two datasets lose_team_stats.csv and win_team_stats.csv. Each game also has a gameId which is unique to that specific game. This ID is identical in each dataset. The win_team_stats.csv file contains the winning teams kills, deaths, gold earned, damage dealt, crowd control, and vision scores for each player. The lose_team_stats is the same but for the losing teams. These datasets are great because they contain nearly 100k games and have no NA/Null values.
 
 
 ## Cleaning Data
@@ -266,28 +266,27 @@ xgb.plot.multi.trees(model = xgb_cmb_model, feature_names = colnames(train_matri
 ```
 
 
-### AdaBag
+### SuperLearner
 
 #### Training
-Here we will create our AdaBag model.
+Here we will create our SuperLearner model.
 ```{r}
-library(fastAdaboost)
+library(SuperLearner)
 set.seed(1010)
-#i <- sample(1:nrow(full_stats_train), .1*nrow(full_stats_train), replace=FALSE)
-#smaller_train <- full_stats_train[i,]
-adab_model <- boosting(won~., full_stats_train, 10)
-summary(adab_model)
+super_model <- SuperLearner(train_label, full_stats_train[,-1], family=binomial(), SL.library="SL.ranger")
+super_model
 ```
 
 #### Testing & Evaluation
-Here we will predict with and evaluate the results our AdaBag model
+Here we will predict with and evaluate the results our SuperLearner model
 ```{r}
-pred_adab <- predict(adab_model, newdata=full_stats_test, type="response")
-pred_adab$class
+probs_super_model <- predict(super_model, newdata=full_stats_test[,-1])
+pred_super_model <- ifelse(probs_super_model$pred > 0, 1, 0)
+confusionMatrix(as.factor(pred_super_model), as.factor(full_stats_test$won))
 ```
 
 
-## Random Forest vs XGBoost vs AdaBag
+## Random Forest vs XGBoost vs SuperLearner
 Analyzing the results of each model based on the algorithms.
 
 ### Random Forest
@@ -307,12 +306,12 @@ The XGBoost model without combined trees had an accuracy of 95.57%, with the sam
 #### With Combined Trees
 The XGBoost model without combined trees had an accuracy of 95.49%, with the same balanced accuracy.The Kappa value was .9098, with sensitivity of .9530 and specificity of .9552. The accuracy is fairly high and it was very fast to run. Kappa, sensitivity, and specificity are all also fairly close to 1. This shows overall this was a good model. However, it was a slightly worse than the non-combined XGBoost model. I think this is because I had to limit the model more with max depth, etc. in order to make the tree smaller to easily read when plotted.
 
-### AdaBag?
+### SuperLearner
 
-asdf
+For SuperLearner I used 3 models, the SuperLearner's Ranger. The SuperLearner's Ranger model had an accuracy of 66.21%, with the balanced accuracy of 65.87%. The kappa value and sensitivity values were not close to 1 (around .3). But the specificity was exactly 1. This model took a reasonable amount of time to run and was significantly less accurate than the other models. We didn't put a lot of time into making the best parameters for SuperLearner, which could boost the accuracy, but it would require a lot more work than the other models for similar results. We also found this model to be the least simple to implement as you are almost using SuperLearner as a middle man for each model/algorithm. 
 
 
 ### Summary
 
-Overall Random Forest and XGBoost were very good models. The Random Forest without bagging was overall the best, but this was by very small margins. I was very impressed by both of XGBoost for how nice the plotting is and how quickly the model runs. When possible, I will likely opt to use XGBoost for it's speed and high accuracy. All of these models performed much better than the base decision tree models we made, both the pruned/unpruned trees were greatly outperformed in accuracy compared to these models.
+Overall Random Forest and XGBoost were very good models. The Random Forest without bagging was overall the best, but this was by very small margins. I was very impressed by both of XGBoost for how nice the plotting is and how quickly the model runs. When possible, I will likely opt to use XGBoost for it's speed and high accuracy. All of these models performed much better than the base decision tree models we made, both the pruned/unpruned trees were greatly outperformed in accuracy compared to these models. However, the SuperLearner models were quite poor, I also combined the SuperLearner version of RandomForest and XGBoost previously to test to see if they would perform as well, but it dropped the accuracy down to around 50% therefore I simply restricted it to just Ranger. But even with that the accuracy is lower than the initial decision tree and is overall a poor model of our data, especially compared with the faster and more accurate models. 
 
