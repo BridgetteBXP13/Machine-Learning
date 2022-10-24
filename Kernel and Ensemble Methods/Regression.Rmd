@@ -1,5 +1,5 @@
 ---
-title: "Kernel and Ensemble Methods: Classification"
+title: "Kernel and Ensemble Methods: Regression"
 author: "Isabelle Kirby, Bridgette Bryant"
 output:
   pdf_document: default
@@ -230,6 +230,7 @@ For this data set there was little difference between the accuracies in the diff
 Polynomial kernels behave similarly to the linear kernels. However, they put all the data in a feature space over polynomials of the original variables, meaning that they work better for data that isn't easily separated linearly.
 
 This performed slightly worse than linear kernel, meaning this dataset was easily split using a linear hyperplane. However, it was still very accurate.
+
 ### SVM Radial Kernels
 
 Radial kernels are similar to polynomial kernels as they both work with data that cannot be linearly separated easily. This generates a non-linear decision boundary.

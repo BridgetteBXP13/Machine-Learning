@@ -2,8 +2,8 @@
 title: "Kernel and Ensemble Methods: Classification"
 author: "Isabelle Kirby, Bridgette Bryant"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 # Ensemble Packaging Methods for Korea's top high elo teams in League of Legends
