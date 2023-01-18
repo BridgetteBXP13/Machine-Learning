@@ -4,6 +4,6 @@ remote_theme: pages-themes/time-machine@v0.2.0
 plugins:
 - jekyll-remote-theme
 gem "github-pages", group: :jekyll_plugins
-title: CS-4375.003---Intoduction-to-Machine-Learning
+title: Machine Learning
 description: This is a github to store my Introduction to Machine Learning projects from my CS 4375.003 class. 
 show_downloads: true
